@@ -221,7 +221,7 @@
             color: #374151;
         }
         
-        .form-input, .status-dropdown { /* Combined for consistency */
+        .form-input, .status-dropdown-filter { /* Combined for consistency, renamed general status-dropdown */
             width: 100%;
             padding: 15px;
             border: 2px solid #e5e7eb;
@@ -230,16 +230,24 @@
             background: white;
         }
         
-        .form-input:focus, .status-dropdown:focus {
+        .form-input:focus, .status-dropdown-filter:focus {
             outline: none;
             border-color: #667eea;
         }
 
         /* Specific styling for status dropdowns if different from form-input */
-        .status-dropdown {
-            padding: 12px 15px; /* Adjusted padding to match form-input better */
-            font-size: 14px; /* Slightly smaller font for dropdowns if needed */
-            /* width: auto; */ /* Uncomment if dropdowns should not be full width in some contexts */
+        .status-dropdown-filter { /* For filter dropdowns */
+            padding: 12px 15px; 
+            font-size: 14px; 
+        }
+         /* Styling for status display in ticket cards (non-interactive) */
+        .ticket-status-display {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block; /* To allow background and padding */
         }
         
         .login-btn {
@@ -478,25 +486,20 @@
             border-top: 1px solid #f3f4f6;
             padding-top: 8px;
         }
-        
-        .ticket-status { /* This class might be for static display, adjust if needed */
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        
+                
         /* Status Dropdown colors (also applied to .form-input if it's a select with these classes) */
-        .status-dropdown.status-offen, .form-input.status-offen { 
-            background: #fee2e2 !important; /* important to override general form-input bg */
+        /* And for ticket-status-display */
+        .status-dropdown-filter.status-offen, .form-input.status-offen, .ticket-status-display.status-offen { 
+            background: #fee2e2 !important; 
             color: #dc2626 !important; 
             border-color: #fca5a5 !important;
         }
-        .status-dropdown.status-in-bearbeitung, .form-input.status-in-bearbeitung { 
+        .status-dropdown-filter.status-in-bearbeitung, .form-input.status-in-bearbeitung, .ticket-status-display.status-in-bearbeitung { 
             background: #fef3c7 !important; 
             color: #d97706 !important; 
             border-color: #fcd34d !important;
         }
-        .status-dropdown.status-gelöst, .form-input.status-gelöst { 
+        .status-dropdown-filter.status-gelöst, .form-input.status-gelöst, .ticket-status-display.status-gelöst { 
             background: #dcfce7 !important; 
             color: #16a34a !important; 
             border-color: #86efac !important;
@@ -732,10 +735,10 @@
             color: #374151;
         }
         /* Ensure select dropdowns in detail-value take full width of their cell */
-        .detail-value .status-dropdown {
+        .detail-value .status-dropdown-filter { /* Changed to status-dropdown-filter for consistency */
             width: 100%;
-            padding: 10px 12px; /* Adjust padding for modal context if needed */
-            font-size: 14px;    /* Adjust font size for modal context */
+            padding: 10px 12px; 
+            font-size: 14px;    
         }
         
         .problem-description {
@@ -950,7 +953,7 @@
         <div id="tickets-tab" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3>📋 Meine Tickets</h3>
-                <select id="ticketFilter" class="form-input status-dropdown" style="width: auto; padding: 8px 12px;" onchange="filterTickets()">
+                <select id="ticketFilter" class="form-input status-dropdown-filter" style="width: auto; padding: 8px 12px;" onchange="filterTickets()">
                     <option value="all">Alle Tickets</option>
                     <option value="Offen">🔴 Offen</option>
                     <option value="In Bearbeitung">🟡 In Bearbeitung</option>
@@ -1061,8 +1064,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">📊 Status *</label>
-                        <select class="form-input" id="editStatus" required>
-                            <option value="Offen">🔴 Offen</option>
+                        <select class="form-input status-dropdown-filter" id="editStatus" required> <option value="Offen">🔴 Offen</option>
                             <option value="In Bearbeitung">🟡 In Bearbeitung</option>
                             <option value="Gelöst">🟢 Gelöst</option>
                         </select>
@@ -1202,15 +1204,12 @@
                     document.getElementById('adminTab').style.display = 'none';
                 }
                 
-                loadTicketsFromStorage(); // Tickets laden (kann redundant sein, aber stellt sicher)
-                displayTickets(); // Tickets anzeigen, falls der Tickets-Tab aktiv ist oder wird
-                updateStats();    // Statistiken aktualisieren
-                showTab('dashboard'); // Standard-Tab nach Login
-                 // Make sure the dashboard tab button is visually active
+                loadTicketsFromStorage(); 
+                displayTickets(); 
+                updateStats();    
+                showTab('dashboard'); 
                 document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
                 document.querySelector('.nav-tab[onclick="showTab(\'dashboard\')"]').classList.add('active');
-
-
             }, 800);
         }
 
@@ -1236,7 +1235,6 @@
             });
             
             document.getElementById(tabName + '-tab').classList.add('active');
-            // Find the button that calls showTab with the specific tabName
             const activeButton = Array.from(document.querySelectorAll('.nav-tab')).find(
                 button => button.getAttribute('onclick') === `showTab('${tabName}')`
             );
@@ -1275,10 +1273,10 @@
                 prioritaet: document.getElementById('prioritaet').value,
                 stoerung: document.getElementById('stoerung').value.trim(),
                 kategorie: document.getElementById('kategorie').value,
-                status: 'Offen', // Standardstatus
+                status: 'Offen', 
                 ersteller: currentUser ? currentUser.name : 'System',
                 erstelltAm: new Date().toLocaleString('de-DE'),
-                kommentare: [] // Initial leere Kommentare
+                kommentare: [] 
             };
             
             if (!ticketData.kundenName || !ticketData.firma || !ticketData.telefon || 
@@ -1302,20 +1300,16 @@
             
             setTimeout(() => {
                 showTab('dashboard');
-            }, 1500); // Kurze Verzögerung für die Benachrichtigung
+            }, 1500); 
             
             updateStats();
-            sendTeamsNotification(ticketData); // Teams-Benachrichtigung (Simulation)
+            sendTeamsNotification(ticketData); 
         }
 
         // Formular leeren
         function clearTicketForm() {
-            // Replaced confirm with a custom notification or modal if available
-            // For now, let's assume direct action or use a simpler approach
-            // if (confirm('Möchten Sie wirklich alle Eingaben löschen?')) {
             document.getElementById('ticketForm').reset();
             showNotification('🗑️ Formular wurde geleert', 'info');
-            // }
         }
 
         // Statistiken aktualisieren
@@ -1337,10 +1331,9 @@
         // Teams-Benachrichtigung senden (Simulation)
         function sendTeamsNotification(ticketData) {
             console.log('Teams-Benachrichtigung für Ticket #' + ticketData.id);
-            // In echter Version würde hier der Teams-Webhook aufgerufen
         }
 
-        // Tickets anzeigen
+        // Tickets anzeigen (in der Ticket-Liste)
         function displayTickets() {
             const ticketsList = document.getElementById('ticketsList');
             const noTicketsDiv = document.getElementById('noTickets');
@@ -1351,10 +1344,10 @@
                 filteredTickets = tickets.filter(ticket => ticket.status === filter);
             }
             
-            filteredTickets.sort((a, b) => b.id - a.id); // Neueste zuerst
+            filteredTickets.sort((a, b) => b.id - a.id); 
             
             if (filteredTickets.length === 0) {
-                ticketsList.innerHTML = ''; // Clear previous tickets
+                ticketsList.innerHTML = ''; 
                 ticketsList.style.display = 'none';
                 noTicketsDiv.style.display = 'block';
                 return;
@@ -1377,13 +1370,9 @@
                     <div class="ticket-description">${ticket.stoerung}</div>
                     <div class="ticket-meta">
                         <div>
-                            <select class="form-input status-dropdown status-${ticket.status.toLowerCase().replace(/ /g, '-')}" 
-                                    onchange="changeTicketStatusDirect(${ticket.id}, this.value)" 
-                                    onclick="event.stopPropagation()">
-                                <option value="Offen" ${ticket.status === 'Offen' ? 'selected' : ''}>🔴 Offen</option>
-                                <option value="In Bearbeitung" ${ticket.status === 'In Bearbeitung' ? 'selected' : ''}>🟡 In Bearbeitung</option>
-                                <option value="Gelöst" ${ticket.status === 'Gelöst' ? 'selected' : ''}>🟢 Gelöst</option>
-                            </select>
+                            <span class="ticket-status-display status-${ticket.status.toLowerCase().replace(/ /g, '-')}">
+                                ${getStatusIcon(ticket.status)} ${ticket.status}
+                            </span>
                             • 🔧 ${ticket.gruppe}
                         </div>
                         <div>${ticket.erstelltAm}</div>
@@ -1399,34 +1388,12 @@
                 </div>
             `).join('');
         }
-
-        // Direkter Status-Wechsel über Dropdown in der Liste
-        function changeTicketStatusDirect(ticketId, newStatus) {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (!ticket || ticket.status === newStatus) return;
-            
-            const oldStatus = ticket.status;
-            ticket.status = newStatus;
-            
-            if (!Array.isArray(ticket.kommentare)) ticket.kommentare = [];
-            ticket.kommentare.push({
-                author: currentUser ? currentUser.name : 'System',
-                date: new Date().toLocaleString('de-DE'),
-                text: `Status geändert von "${oldStatus}" zu "${newStatus}".`
-            });
-            
-            saveTicketsToStorage();
-            showNotification(`✅ Status von Ticket #${ticketId} geändert: ${newStatus}`, 'success');
-            
-            updateStats();
-            displayTickets(); // Liste neu zeichnen, um korrekte Dropdown-Farben sicherzustellen
-        }
         
-        // NEUE FUNKTION: Status-Wechsel aus dem Modal
+        // Status-Wechsel aus dem Modal
         function changeTicketStatusFromModal(ticketId, newStatus) {
             const ticket = tickets.find(t => t.id === ticketId);
             if (!ticket || ticket.status === newStatus) {
-                 if (ticket) openTicketDetail(ticketId); // Refresh modal even if status is same, to ensure consistency
+                 if (ticket) openTicketDetail(ticketId); 
                 return;
             }
 
@@ -1443,11 +1410,10 @@
             saveTicketsToStorage();
             showNotification(`✅ Status von Ticket #${ticketId} geändert: ${newStatus}`, 'success');
             
-            updateStats();    // Dashboard-Statistiken aktualisieren
-            displayTickets(); // Ticket-Liste im Hintergrund aktualisieren
+            updateStats();    
+            displayTickets(); 
 
-            // Modal neu öffnen, um die Änderungen (Status und neuer Kommentar) sofort anzuzeigen
-            openTicketDetail(ticketId);
+            openTicketDetail(ticketId); // Modal neu laden mit aktuellen Daten
         }
 
 
@@ -1456,7 +1422,6 @@
             const ticket = tickets.find(t => t.id === ticketId);
             if (!ticket) return;
 
-            // Sicherstellen, dass Kommentare ein Array ist
             if (!Array.isArray(ticket.kommentare)) {
                 ticket.kommentare = [];
             }
@@ -1466,11 +1431,10 @@
             const editBtn = document.getElementById('editTicketBtn');
             
             modalTitle.textContent = `🎫 Ticket #${ticket.id}`;
-            editBtn.onclick = () => startEditTicket(ticketId); // Behält die ID für den Bearbeiten-Button
+            editBtn.onclick = () => startEditTicket(ticketId); 
             
-            // Status Dropdown für das Modal
             const statusDropdownHTML = `
-                <select class="form-input status-dropdown status-${ticket.status.toLowerCase().replace(/ /g, '-')}" 
+                <select class="form-input status-dropdown-filter status-${ticket.status.toLowerCase().replace(/ /g, '-')}" 
                         onchange="changeTicketStatusFromModal(${ticket.id}, this.value)">
                     <option value="Offen" ${ticket.status === 'Offen' ? 'selected' : ''}>🔴 Offen</option>
                     <option value="In Bearbeitung" ${ticket.status === 'In Bearbeitung' ? 'selected' : ''}>🟡 In Bearbeitung</option>
@@ -1506,7 +1470,7 @@
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">📊 Status</div>
-                        <div class="detail-value">${statusDropdownHTML}</div> {/* HIER DAS DROPDOWN EINGEFÜGT */}
+                        <div class="detail-value">${statusDropdownHTML}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">📋 Kategorie</div>
@@ -1566,7 +1530,7 @@
                 return;
             }
             
-            if (!Array.isArray(ticket.kommentare)) ticket.kommentare = []; // Sicherstellen
+            if (!Array.isArray(ticket.kommentare)) ticket.kommentare = []; 
             ticket.kommentare.push({
                 author: currentUser ? currentUser.name : 'System',
                 date: new Date().toLocaleString('de-DE'),
@@ -1575,7 +1539,7 @@
             
             saveTicketsToStorage();
             showNotification('✅ Kommentar hinzugefügt!', 'success');
-            openTicketDetail(ticketId); // Modal-Inhalt aktualisieren
+            openTicketDetail(ticketId); 
         }
 
         // Modal schließen
@@ -1584,11 +1548,11 @@
         }
 
         // Ticket bearbeiten starten (aus dem Detail-Modal)
-        function startEditTicket(ticketIdToEdit) { // Parameter umbenannt, um Verwechslung zu vermeiden
+        function startEditTicket(ticketIdToEdit) { 
             const ticket = tickets.find(t => t.id === ticketIdToEdit);
             if (!ticket) return;
             
-            currentEditingTicket = ticket; // Globale Variable setzen
+            currentEditingTicket = ticket; 
             
             document.getElementById('editKundenName').value = ticket.kundenName;
             document.getElementById('editFirma').value = ticket.firma;
@@ -1596,13 +1560,18 @@
             document.getElementById('editKundenEmail').value = ticket.kundenEmail || '';
             document.getElementById('editGruppe').value = ticket.gruppe;
             document.getElementById('editPriorität').value = ticket.prioritaet;
-            document.getElementById('editStatus').value = ticket.status; // Status für Edit-Form
+            document.getElementById('editStatus').value = ticket.status; 
             document.getElementById('editStoerung').value = ticket.stoerung;
             document.getElementById('editKategorie').value = ticket.kategorie || '';
             document.getElementById('editZugewiesen').value = ticket.zugewiesen || '';
             
-            closeModal(); // Detail-Modal schließen
-            document.getElementById('editModal').classList.add('show'); // Edit-Modal öffnen
+            // Apply color to status dropdown in edit modal
+            const editStatusDropdown = document.getElementById('editStatus');
+            editStatusDropdown.className = `form-input status-dropdown-filter status-${ticket.status.toLowerCase().replace(/ /g, '-')}`;
+
+
+            closeModal(); 
+            document.getElementById('editModal').classList.add('show'); 
         }
 
         // Edit-Modal schließen
@@ -1623,7 +1592,7 @@
                 zugewiesen: document.getElementById('editZugewiesen').value,
                 gruppe: document.getElementById('editGruppe').value,
                 prioritaet: document.getElementById('editPriorität').value,
-                status: document.getElementById('editStatus').value, // Status aus Edit-Form
+                status: document.getElementById('editStatus').value, 
                 stoerung: document.getElementById('editStoerung').value.trim(),
                 kategorie: document.getElementById('editKategorie').value
             };
@@ -1655,7 +1624,7 @@
                 });
             }
             
-            Object.assign(currentEditingTicket, updatedData); // Ticket aktualisieren
+            Object.assign(currentEditingTicket, updatedData); 
             
             saveTicketsToStorage();
             showNotification(`✅ Ticket #${currentEditingTicket.id} erfolgreich aktualisiert!`, 'success');
@@ -1667,21 +1636,23 @@
 
         // Ticket bearbeiten (aus der Ticket-Liste, öffnet Edit-Modal)
         function editTicket(ticketId) {
-            startEditTicket(ticketId); // Ruft die Funktion auf, die das Edit-Modal vorbereitet und öffnet
+            startEditTicket(ticketId); 
         }
 
         // Ticket löschen
         function deleteTicket(ticketId) {
-            // Ersetze confirm durch eine bessere UI-Lösung, falls vorhanden
-            // if (confirm(`Ticket #${ticketId} wirklich löschen?`)) {
-            showNotification(`Möchten Sie Ticket #${ticketId} wirklich löschen? (Implementiere Bestätigungs-UI)`, 'info');
-            // Temporär direkt löschen für Testzwecke, bis eine bessere UI da ist:
+            // Consider implementing a custom modal for confirmation
+            // For now, direct deletion with a notification
+            const ticketNameToDelete = tickets.find(t => t.id === ticketId)?.kundenName || `Ticket #${ticketId}`;
+            showNotification(`Möchten Sie "${ticketNameToDelete}" wirklich löschen? (Bestätigung UI benötigt)`, 'info');
+            
+            // Placeholder for actual deletion confirmation logic
+            // For now, let's proceed with deletion for testing:
             tickets = tickets.filter(t => t.id !== ticketId);
             saveTicketsToStorage();
-            showNotification(`🗑️ Ticket #${ticketId} gelöscht`, 'success');
+            showNotification(`🗑️ "${ticketNameToDelete}" gelöscht`, 'success');
             displayTickets();
             updateStats();
-            // }
         }
 
         // Tickets filtern
@@ -1691,9 +1662,15 @@
 
         // Priority Icon
         function getPriorityIcon(priority) {
-            const icons = { 'Niedrig': '🟢', 'Normal': '🔵', 'Hoch': '�', 'Kritisch': '🔴' };
+            const icons = { 'Niedrig': '🟢', 'Normal': '🔵', 'Hoch': '🟡', 'Kritisch': '🔴' };
             return icons[priority] || '🔵';
         }
+        // Status Icon
+        function getStatusIcon(status) {
+            const icons = { 'Offen': '🔴', 'In Bearbeitung': '🟡', 'Gelöst': '🟢'};
+            return icons[status] || '❓'; // Fallback icon
+        }
+
 
         // Benachrichtigungen
         function showNotification(message, type = 'info') {
@@ -1705,7 +1682,7 @@
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => notification.remove(), 300);
-            }, type === 'error' ? 5000 : 3000); // Längere Anzeige für Fehler
+            }, type === 'error' ? 5000 : 3000); 
         }
 
         // Modal außerhalb schließen
@@ -1726,14 +1703,14 @@
 
         // Demo-Daten für neue Installationen hinzufügen
         function addDemoData() {
-            if (tickets.length === 0) { // Nur wenn keine Tickets vorhanden sind
+            if (tickets.length === 0) { 
                 const demoTickets = [
                     {
                         id: 1, kundenName: "Max Mustermann", firma: "Mustermann GmbH", telefon: "0203 123456",
                         kundenEmail: "max@mustermann.de", zugewiesen: "Administrator", gruppe: "Software",
                         prioritaet: "Hoch", stoerung: "Software funktioniert nicht mehr nach dem Update.",
                         kategorie: "Bug", status: "In Bearbeitung", ersteller: "Administrator",
-                        erstelltAm: new Date(Date.now() - 86400000).toLocaleString('de-DE'), // Gestern
+                        erstelltAm: new Date(Date.now() - 86400000).toLocaleString('de-DE'), 
                         kommentare: [{ author: "Administrator", date: new Date().toLocaleString('de-DE'), text: "Problem reproduziert." }]
                     },
                     {
@@ -1741,29 +1718,33 @@
                         kundenEmail: "anna@weber-co.de", zugewiesen: "Max Schmidt", gruppe: "Hardware",
                         prioritaet: "Normal", stoerung: "Drucker druckt nur noch weiße Seiten.",
                         kategorie: "Support", status: "Offen", ersteller: "Max Schmidt",
-                        erstelltAm: new Date().toLocaleString('de-DE'), // Heute
+                        erstelltAm: new Date().toLocaleString('de-DE'), 
                         kommentare: []
                     }
                 ];
                 tickets = demoTickets;
-                ticketCounter = 3; // Nächste ID
+                ticketCounter = 3; 
                 saveTicketsToStorage();
                 console.log('✅ Demo-Daten hinzugefügt');
                 showNotification('ℹ️ Demo-Tickets wurden geladen.', 'info');
             }
         }
         
-        // Beim ersten Laden Demo-Daten hinzufügen, falls keine Tickets vorhanden
+        // Event listener for editStatus dropdown in the edit modal to apply color classes
+        document.getElementById('editStatus').addEventListener('change', function() {
+            this.className = `form-input status-dropdown-filter status-${this.value.toLowerCase().replace(/ /g, '-')}`;
+        });
+
+
         window.addEventListener('load', function() {
-            // loadTicketsFromStorage() ist bereits in DOMContentLoaded
-            setTimeout(() => { // Kleine Verzögerung, um sicherzustellen, dass alles initialisiert ist
+            setTimeout(() => { 
                 addDemoData();
-                updateStats(); // Stats nach potentiellem Hinzufügen von Demo-Daten aktualisieren
-                displayTickets(); // Tickets anzeigen, falls der Ticket-Tab aktiv ist
+                updateStats(); 
+                displayTickets(); 
             }, 500); 
         });
 
-        console.log('📱 Ticket System mit direkter Statusänderung im Modal geladen');
+        console.log('📱 Ticket System mit korrigierter Statusanzeige geladen');
     </script>
 </body>
 </html>

@@ -74,11 +74,11 @@
                 display: block;
             }
             
-            .tickets-list {
+            .tickets-list, .user-list { /* Added .user-list */
                 max-height: 500px;
             }
             
-            .ticket-card {
+            .ticket-card, .user-card { /* Added .user-card */
                 padding: 25px;
             }
             
@@ -221,7 +221,7 @@
             color: #374151;
         }
         
-        .form-input, .status-dropdown-filter { /* Combined for consistency, renamed general status-dropdown */
+        .form-input, .status-dropdown-filter { 
             width: 100%;
             padding: 15px;
             border: 2px solid #e5e7eb;
@@ -235,19 +235,17 @@
             border-color: #667eea;
         }
 
-        /* Specific styling for status dropdowns if different from form-input */
-        .status-dropdown-filter { /* For filter dropdowns */
+        .status-dropdown-filter { 
             padding: 12px 15px; 
             font-size: 14px; 
         }
-         /* Styling for status display in ticket cards (non-interactive) */
         .ticket-status-display {
             padding: 4px 8px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            display: inline-block; /* To allow background and padding */
+            display: inline-block; 
         }
         
         .login-btn {
@@ -267,7 +265,6 @@
             transform: scale(0.98);
         }
         
-        /* Main App */
         .main-app {
             display: none;
             background: white;
@@ -396,7 +393,7 @@
             transform: translateY(-100px);
             transition: transform 0.3s;
             z-index: 1000;
-            white-space: pre-wrap; /* Allow multi-line notifications */
+            white-space: pre-wrap; 
         }
         
         .notification.show {
@@ -407,24 +404,24 @@
             background: #ef4444;
         }
         
-        /* Ticket List Styles */
-        .tickets-list {
+        .tickets-list, .user-list { /* Added .user-list */
             max-height: 400px;
             overflow-y: auto;
         }
         
-        .ticket-card {
+        .ticket-card, .user-card { /* Added .user-card */
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
-            cursor: pointer;
+            cursor: default; /* Default cursor for user cards, tickets are clickable */
             transition: all 0.2s;
             position: relative;
         }
+        .ticket-card { cursor: pointer; } /* Keep ticket cards clickable */
         
-        .ticket-card:hover {
+        .ticket-card:hover, .user-card:hover { /* Added .user-card */
             border-color: #667eea;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
@@ -477,7 +474,7 @@
             text-overflow: ellipsis;
         }
         
-        .ticket-meta {
+        .ticket-meta, .user-meta { /* Added .user-meta */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -485,10 +482,9 @@
             color: #9ca3af;
             border-top: 1px solid #f3f4f6;
             padding-top: 8px;
+            margin-top: 12px; /* Added margin for separation */
         }
                 
-        /* Status Dropdown colors (also applied to .form-input if it's a select with these classes) */
-        /* And for ticket-status-display */
         .status-dropdown-filter.status-offen, .form-input.status-offen, .ticket-status-display.status-offen { 
             background: #fee2e2 !important; 
             color: #dc2626 !important; 
@@ -505,38 +501,35 @@
             border-color: #86efac !important;
         }
         
-        .ticket-actions {
-            display: none; /* Hidden by default, shown on hover */
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10;
-        }
-        
-        .ticket-card:hover .ticket-actions {
-            display: block;
+        .ticket-actions, .user-actions { /* Added .user-actions */
+            display: flex; /* Changed to flex for button alignment */
+            gap: 8px; /* Space between buttons */
+            /* Removed absolute positioning, will be part of user-meta or similar */
         }
         
         .action-menu-btn {
             background: none;
-            border: none;
-            padding: 8px;
+            border: 1px solid #e5e7eb; /* Added border for visibility */
+            padding: 6px 10px; /* Adjusted padding */
             cursor: pointer;
             border-radius: 6px;
             font-size: 12px;
             color: #6b7280;
-            width: 100%;
-            text-align: left;
+            /* width: 100%; */ /* Removed to allow multiple buttons in a row */
+            text-align: center; /* Centered text */
         }
         
         .action-menu-btn:hover {
             background: #f3f4f6;
             color: #374151;
+            border-color: #d1d5db;
         }
+         .action-menu-btn.delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #fca5a5;
+        }
+
         
         .assigned-user {
             font-size: 11px;
@@ -544,7 +537,6 @@
             margin-top: 4px;
         }
         
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -653,7 +645,6 @@
             background: #dc2626;
         }
         
-        /* Comments Styles */
         .comments-section {
             margin-top: 20px;
             border-top: 1px solid #e5e7eb;
@@ -688,7 +679,7 @@
         .comment-text {
             color: #4b5563;
             line-height: 1.5;
-            white-space: pre-wrap; /* Ensure comments respect newlines */
+            white-space: pre-wrap; 
         }
         
         .comment-form {
@@ -734,8 +725,7 @@
             font-weight: 600;
             color: #374151;
         }
-        /* Ensure select dropdowns in detail-value take full width of their cell */
-        .detail-value .status-dropdown-filter { /* Changed to status-dropdown-filter for consistency */
+        .detail-value .status-dropdown-filter { 
             width: 100%;
             padding: 10px 12px; 
             font-size: 14px;    
@@ -768,15 +758,40 @@
             }
         }
 
-        .no-tickets {
+        .no-tickets, .no-users { /* Added .no-users */
             text-align: center;
             padding: 40px;
             color: #6c757d;
         }
-        .no-tickets div {
+        .no-tickets div, .no-users div { /* Added .no-users */
             font-size: 48px;
             margin-bottom: 20px;
         }
+        /* User card specific styles */
+        .user-card .user-name {
+            font-weight: 600;
+            color: #374151;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+        .user-card .user-email {
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        .user-card .user-role {
+            font-size: 0.9em;
+            color: #374151;
+            padding: 3px 7px;
+            border-radius: 4px;
+            background-color: #e0e7ff; /* Light indigo for roles */
+            display: inline-block;
+        }
+         .user-card .user-role.admin {
+            background-color: #c7d2fe; /* Slightly darker for admin */
+            font-weight: bold;
+        }
+
 
     </style>
 </head>
@@ -786,13 +801,13 @@
         <h1 class="title">Ticket System</h1>
         
         <div class="demo-buttons">
-            <div class="demo-button" onclick="quickLogin('admin')">
+            <div class="demo-button" onclick="quickLogin('admin@firma.de')">
                 👑 Admin-Zugang
             </div>
-            <div class="demo-button" onclick="quickLogin('user')">
+            <div class="demo-button" onclick="quickLogin('max@firma.de')">
                 👤 Mitarbeiter-Zugang  
             </div>
-            <div class="demo-button" onclick="quickLogin('guest')">
+            <div class="demo-button" onclick="quickLogin('gast@demo.de')">
                 👁️ Gast-Zugang
             </div>
         </div>
@@ -800,12 +815,12 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
                 <label class="form-label">E-Mail:</label>
-                <input type="email" class="form-input" id="email" placeholder="admin@firma.de">
+                <input type="email" class="form-input" id="email" placeholder="z.B. admin@firma.de" required>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Passwort:</label>
-                <input type="password" class="form-input" id="password" placeholder="admin123">
+                <input type="password" class="form-input" id="password" placeholder="Passwort" required>
             </div>
             
             <button type="submit" class="login-btn">
@@ -824,7 +839,7 @@
             <button class="nav-tab active" onclick="showTab('dashboard')">📊 Start</button>
             <button class="nav-tab" onclick="showTab('create')">➕ Neu</button>
             <button class="nav-tab" onclick="showTab('tickets')">📋 Tickets</button>
-            <button class="nav-tab" id="adminTab" onclick="showTab('admin')" style="display:none;">⚙️ Admin</button>
+            <button class="nav-tab" id="adminTabButton" onclick="showTab('admin')" style="display:none;">⚙️ Admin</button>
         </div>
         
         <div id="dashboard-tab" class="tab-content active">
@@ -972,11 +987,39 @@
         </div>
         
         <div id="admin-tab" class="tab-content">
-            <h3>⚙️ Administration</h3>
-            <p style="text-align: center; padding: 40px; color: #6c757d;">
-                <strong>👑 Admin-Panel</strong><br>
-                Erweiterte Einstellungen werden implementiert.
-            </p>
+            <h3>⚙️ Benutzerverwaltung</h3>
+            <form id="createUserForm" onsubmit="handleCreateUser(event)" style="margin-bottom: 30px; padding: 20px; background-color: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <h4 style="margin-bottom: 15px; color: #374151;"> Neuen Benutzer anlegen</h4>
+                <div class="form-group">
+                    <label class="form-label" for="newUserName">👤 Name *</label>
+                    <input type="text" class="form-input" id="newUserName" placeholder="Max Mustermann" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newUserEmail">📧 E-Mail *</label>
+                    <input type="email" class="form-input" id="newUserEmail" placeholder="max.mustermann@firma.de" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newUserPassword">🔑 Passwort *</label>
+                    <input type="password" class="form-input" id="newUserPassword" placeholder="Mindestens 6 Zeichen" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newUserRole">👑 Rolle *</label>
+                    <select class="form-input" id="newUserRole" required>
+                        <option value="user">👤 Benutzer</option>
+                        <option value="admin">👑 Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">➕ Benutzer anlegen</button>
+            </form>
+
+            <h4 style="margin-bottom: 15px; color: #374151;">📋 Vorhandene Benutzer</h4>
+            <div id="userList" class="user-list">
+                </div>
+            <div id="noUsers" class="no-users" style="display: none;">
+                <div>👥</div>
+                <strong>Keine Benutzer vorhanden</strong><br>
+                <small>Legen Sie den ersten Benutzer über das Formular oben an.</small>
+            </div>
         </div>
         
         <button class="logout-btn" onclick="logout()">
@@ -1064,7 +1107,8 @@
                     
                     <div class="form-group">
                         <label class="form-label">📊 Status *</label>
-                        <select class="form-input status-dropdown-filter" id="editStatus" required> <option value="Offen">🔴 Offen</option>
+                        <select class="form-input status-dropdown-filter" id="editStatus" required> 
+                            <option value="Offen">🔴 Offen</option>
                             <option value="In Bearbeitung">🟡 In Bearbeitung</option>
                             <option value="Gelöst">🟢 Gelöst</option>
                         </select>
@@ -1098,19 +1142,132 @@
     </div>
 
     <script>
-        // Demo-Benutzer
-        const users = {
-            admin: { name: 'Administrator', email: 'admin@firma.de', role: 'admin' },
-            user: { name: 'Max Schmidt', email: 'max@firma.de', role: 'user' },
-            guest: { name: 'Gast', email: 'gast@demo.de', role: 'guest' }
-        };
+        // Global user array, to be populated from localStorage
+        let siteUsers = []; 
 
         let currentUser = null;
-        let tickets = []; // Ticket-Speicher
-        let ticketCounter = 1; // Ticket-ID Counter
-        let currentEditingTicket = null; // Aktuell bearbeitetes Ticket
+        let tickets = []; 
+        let ticketCounter = 1; 
+        let currentEditingTicket = null; 
 
-        // LocalStorage Funktionen
+        // --- User Management Functions ---
+        function saveSiteUsersToStorage() {
+            try {
+                localStorage.setItem('ticketSystemSiteUsers', JSON.stringify(siteUsers));
+                console.log('✅ Benutzer gespeichert:', siteUsers.length);
+            } catch (error) {
+                console.error('❌ Fehler beim Speichern der Benutzer:', error);
+                showNotification('⚠️ Speichern der Benutzer fehlgeschlagen', 'error');
+            }
+        }
+
+        function loadSiteUsersFromStorage() {
+            try {
+                const savedSiteUsers = localStorage.getItem('ticketSystemSiteUsers');
+                if (savedSiteUsers) {
+                    siteUsers = JSON.parse(savedSiteUsers);
+                    console.log('✅ Benutzer geladen:', siteUsers.length);
+                } else {
+                    // Initialize with default users if none are found
+                    siteUsers = [
+                        { name: 'Administrator', email: 'admin@firma.de', password: 'admin123', role: 'admin' },
+                        { name: 'Max Schmidt', email: 'max@firma.de', password: 'user123', role: 'user' },
+                        { name: 'Gast Demo', email: 'gast@demo.de', password: 'guest123', role: 'guest' } // Added guest for quickLogin
+                    ];
+                    saveSiteUsersToStorage(); // Save defaults
+                    console.log('ℹ️ Standardbenutzer erstellt und gespeichert.');
+                }
+            } catch (error) {
+                console.error('❌ Fehler beim Laden der Benutzer:', error);
+                siteUsers = []; // Fallback to empty array on error
+            }
+            displaySiteUsers(); // Display users in admin tab if it's visible
+        }
+
+        function displaySiteUsers() {
+            const userListDiv = document.getElementById('userList');
+            const noUsersDiv = document.getElementById('noUsers');
+            if (!userListDiv) return; // Only run if the admin tab elements are present
+
+            if (siteUsers.length === 0) {
+                userListDiv.innerHTML = '';
+                userListDiv.style.display = 'none';
+                noUsersDiv.style.display = 'block';
+                return;
+            }
+
+            userListDiv.style.display = 'block';
+            noUsersDiv.style.display = 'none';
+
+            userListDiv.innerHTML = siteUsers.map(user => `
+                <div class="user-card">
+                    <div class="user-name">${user.name} ${user.role === 'admin' ? '👑' : '👤'}</div>
+                    <div class="user-email">${user.email}</div>
+                    <div class="user-meta">
+                         <span class="user-role ${user.role}">${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                        <div class="user-actions">
+                            ${user.email !== 'admin@firma.de' ? `<button class="action-menu-btn delete-btn" onclick="confirmDeleteSiteUser('${user.email}')">🗑️ Löschen</button>` : '<span style="font-size:12px; color:#9ca3af;">(Hauptadmin)</span>'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function handleCreateUser(event) {
+            event.preventDefault();
+            const name = document.getElementById('newUserName').value.trim();
+            const email = document.getElementById('newUserEmail').value.trim().toLowerCase();
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+
+            if (!name || !email || !password || !role) {
+                showNotification('❌ Bitte alle Felder ausfüllen.', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showNotification('❌ Passwort muss mindestens 6 Zeichen lang sein.', 'error');
+                return;
+            }
+            if (siteUsers.find(user => user.email === email)) {
+                showNotification('❌ Ein Benutzer mit dieser E-Mail existiert bereits.', 'error');
+                return;
+            }
+
+            siteUsers.push({ name, email, password, role }); // Store password in plain text (SECURITY RISK for production)
+            saveSiteUsersToStorage();
+            displaySiteUsers();
+            showNotification(`✅ Benutzer "${name}" erfolgreich angelegt.`, 'success');
+            document.getElementById('createUserForm').reset();
+        }
+
+        function confirmDeleteSiteUser(email) {
+            const userToDelete = siteUsers.find(user => user.email === email);
+            if (!userToDelete) return;
+
+            // Simple custom confirmation dialog (can be improved)
+            const confirmationMessage = `Möchten Sie den Benutzer "${userToDelete.name}" (${userToDelete.email}) wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`;
+            
+            // Create a temporary modal or use a more robust solution later
+            if (window.confirm(confirmationMessage)) { // Using window.confirm for now, replace with custom modal
+                 deleteSiteUser(email);
+            }
+        }
+
+
+        function deleteSiteUser(email) {
+            const userToDelete = siteUsers.find(u => u.email === email);
+            if (userToDelete && userToDelete.email === 'admin@firma.de') {
+                showNotification('❌ Der Hauptadministrator kann nicht gelöscht werden.', 'error');
+                return;
+            }
+            siteUsers = siteUsers.filter(user => user.email !== email);
+            saveSiteUsersToStorage();
+            displaySiteUsers();
+            showNotification(`🗑️ Benutzer "${email}" gelöscht.`, 'success');
+        }
+
+
+        // --- Ticket System Functions (Existing) ---
         function saveTicketsToStorage() {
             try {
                 localStorage.setItem('ticketSystemTickets', JSON.stringify(tickets));
@@ -1129,7 +1286,6 @@
                 
                 if (savedTickets) {
                     tickets = JSON.parse(savedTickets);
-                     // Ensure comments is always an array
                     tickets.forEach(ticket => {
                         if (!Array.isArray(ticket.kommentare)) {
                             ticket.kommentare = [];
@@ -1142,9 +1298,7 @@
                     ticketCounter = parseInt(savedCounter);
                     console.log('✅ Counter geladen:', ticketCounter);
                 }
-                
-                updateStats(); // Statistiken beim Laden aktualisieren
-                
+                updateStats(); 
             } catch (error) {
                 console.error('❌ Fehler beim Laden:', error);
                 tickets = [];
@@ -1152,80 +1306,84 @@
             }
         }
 
-        // Beim Laden der Seite Tickets aus LocalStorage laden
         document.addEventListener('DOMContentLoaded', function() {
-            loadTicketsFromStorage();
-            console.log('📱 Ticket System geladen - Tickets:', tickets.length);
-            // Default to dashboard tab
+            loadSiteUsersFromStorage(); // Load users first
+            loadTicketsFromStorage();   // Then load tickets
+            console.log('📱 Ticket System mit Benutzerverwaltung geladen');
             showTab('dashboard'); 
-            // Activate the first tab button visually
             document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelector('.nav-tab[onclick="showTab(\'dashboard\')"]').classList.add('active');
-
         });
 
-        // Schnell-Login
-        function quickLogin(userType) {
-            const user = users[userType];
-            showNotification(`✅ Angemeldet als ${user.name}`, 'success');
-            loginUser(user);
-        }
-
-        // Login-Form Handler
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if ((email === 'admin@firma.de' && password === 'admin123') ||
-                (email === 'max@firma.de' && password === 'user123')) {
-                
-                const user = email.includes('admin') ? users.admin : users.user;
-                showNotification(`✅ Willkommen ${user.name}!`, 'success');
-                loginUser(user);
+        function quickLogin(emailToLogin) { // Changed parameter to email
+            const user = siteUsers.find(u => u.email === emailToLogin);
+            if (user) {
+                // For quick login, we might bypass password check or use the stored one
+                // This is for demo convenience.
+                showNotification(`✅ Angemeldet als ${user.name} (Schnell-Login)`, 'success');
+                loginUser(user, true); // Pass a flag for quick login
             } else {
-                showNotification('❌ Ungültige Anmeldedaten!', 'error');
+                showNotification(`❌ Schnell-Login für ${emailToLogin} fehlgeschlagen. Benutzer nicht gefunden.`, 'error');
             }
         }
 
-        // Benutzer anmelden
-        function loginUser(user) {
-            currentUser = user;
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+
+            const user = siteUsers.find(u => u.email === email);
+
+            if (user && user.password === password) { // Plain text password check (SECURITY RISK)
+                showNotification(`✅ Willkommen ${user.name}!`, 'success');
+                loginUser(user);
+            } else {
+                showNotification('❌ Ungültige E-Mail oder Passwort!', 'error');
+            }
+        }
+        
+        function loginUser(userObject, isQuickLogin = false) {
+            currentUser = userObject; // userObject should be the full user object from siteUsers
             
             setTimeout(() => {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
-                document.getElementById('userInfo').textContent = `Angemeldet als: ${user.name} (${user.role})`;
+                document.getElementById('userInfo').textContent = `Angemeldet als: ${currentUser.name} (${currentUser.role})`;
                 
-                if (user.role === 'admin') {
-                    document.getElementById('adminTab').style.display = 'block';
+                const adminTabButton = document.getElementById('adminTabButton');
+                if (currentUser.role === 'admin') {
+                    adminTabButton.style.display = 'block';
                 } else {
-                    document.getElementById('adminTab').style.display = 'none';
+                    adminTabButton.style.display = 'none';
                 }
                 
-                loadTicketsFromStorage(); 
+                // No need to load tickets/users again here if already done on DOMContentLoaded
+                // but ensure UI elements are updated if needed
                 displayTickets(); 
                 updateStats();    
+                displaySiteUsers(); // Ensure user list is up-to-date if admin tab is shown
+                
+                if (!isQuickLogin) { // If it's a regular login, reset form
+                     document.getElementById('loginForm').reset();
+                }
+
                 showTab('dashboard'); 
                 document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
                 document.querySelector('.nav-tab[onclick="showTab(\'dashboard\')"]').classList.add('active');
             }, 800);
         }
 
-        // Abmelden
         function logout() {
             showNotification('👋 Abgemeldet', 'info');
             setTimeout(() => {
                 document.getElementById('mainApp').style.display = 'none';
                 document.getElementById('loginScreen').style.display = 'block';
-                document.getElementById('adminTab').style.display = 'none';
-                document.getElementById('loginForm').reset();
+                document.getElementById('adminTabButton').style.display = 'none';
+                document.getElementById('loginForm').reset(); // Reset login form on logout
                 currentUser = null;
             }, 1000);
         }
 
-        // Tab wechseln
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -1248,9 +1406,11 @@
             if (tabName === 'dashboard') {
                 updateStats();
             }
+            if (tabName === 'admin') {
+                displaySiteUsers(); // Refresh user list when admin tab is shown
+            }
         }
 
-        // Teams testen
         function testTeams() {
             showNotification('📢 Teams-Test wird gestartet...', 'info');
             setTimeout(() => {
@@ -1258,10 +1418,8 @@
             }, 2000);
         }
 
-        // Ticket erstellen
         function createTicket(event) {
             event.preventDefault();
-            
             const ticketData = {
                 id: ticketCounter++,
                 kundenName: document.getElementById('kundenName').value.trim(),
@@ -1278,47 +1436,35 @@
                 erstelltAm: new Date().toLocaleString('de-DE'),
                 kommentare: [] 
             };
-            
             if (!ticketData.kundenName || !ticketData.firma || !ticketData.telefon || 
                 !ticketData.gruppe || !ticketData.stoerung) {
                 showNotification('❌ Bitte füllen Sie alle Pflichtfelder (*) aus!', 'error');
                 return;
             }
-            
             tickets.push(ticketData);
             saveTicketsToStorage();
-            console.log('Neues Ticket erstellt:', ticketData);
-            
             showNotification(
                 `✅ Ticket #${ticketData.id} erfolgreich erstellt!\n` +
                 `Kunde: ${ticketData.kundenName}\n` +
                 `Priorität: ${ticketData.prioritaet}`, 
                 'success'
             );
-            
             document.getElementById('ticketForm').reset();
-            
-            setTimeout(() => {
-                showTab('dashboard');
-            }, 1500); 
-            
+            setTimeout(() => { showTab('dashboard'); }, 1500); 
             updateStats();
             sendTeamsNotification(ticketData); 
         }
 
-        // Formular leeren
         function clearTicketForm() {
             document.getElementById('ticketForm').reset();
             showNotification('🗑️ Formular wurde geleert', 'info');
         }
 
-        // Statistiken aktualisieren
         function updateStats() {
             const offeneTickets = tickets.filter(t => t.status === 'Offen').length;
             const inBearbeitung = tickets.filter(t => t.status === 'In Bearbeitung').length;
             const geloeste = tickets.filter(t => t.status === 'Gelöst').length;
             const erfolgsrate = tickets.length > 0 ? Math.round((geloeste / tickets.length) * 100) : 0;
-            
             const statNumbers = document.querySelectorAll('#dashboard-tab .stat-number');
             if (statNumbers.length >= 4) {
                 statNumbers[0].textContent = offeneTickets;
@@ -1328,34 +1474,27 @@
             }
         }
 
-        // Teams-Benachrichtigung senden (Simulation)
         function sendTeamsNotification(ticketData) {
             console.log('Teams-Benachrichtigung für Ticket #' + ticketData.id);
         }
 
-        // Tickets anzeigen (in der Ticket-Liste)
         function displayTickets() {
             const ticketsList = document.getElementById('ticketsList');
             const noTicketsDiv = document.getElementById('noTickets');
             const filter = document.getElementById('ticketFilter').value;
-            
             let filteredTickets = tickets;
             if (filter !== 'all') {
                 filteredTickets = tickets.filter(ticket => ticket.status === filter);
             }
-            
             filteredTickets.sort((a, b) => b.id - a.id); 
-            
             if (filteredTickets.length === 0) {
                 ticketsList.innerHTML = ''; 
                 ticketsList.style.display = 'none';
                 noTicketsDiv.style.display = 'block';
                 return;
             }
-            
             ticketsList.style.display = 'block';
             noTicketsDiv.style.display = 'none';
-            
             ticketsList.innerHTML = filteredTickets.map(ticket => `
                 <div class="ticket-card" onclick="openTicketDetail(${ticket.id})">
                     <div class="ticket-header">
@@ -1377,7 +1516,7 @@
                         </div>
                         <div>${ticket.erstelltAm}</div>
                     </div>
-                    <div class="ticket-actions">
+                    <div class="ticket-actions" style="display:none;"> {/* Keep actions hidden in list view for now or make them part of hover */}
                         <button class="action-menu-btn" onclick="event.stopPropagation(); editTicket(${ticket.id})">
                             ✏️ Bearbeiten
                         </button>
@@ -1389,50 +1528,36 @@
             `).join('');
         }
         
-        // Status-Wechsel aus dem Modal
         function changeTicketStatusFromModal(ticketId, newStatus) {
             const ticket = tickets.find(t => t.id === ticketId);
             if (!ticket || ticket.status === newStatus) {
                  if (ticket) openTicketDetail(ticketId); 
                 return;
             }
-
             const oldStatus = ticket.status;
             ticket.status = newStatus;
-
             if (!Array.isArray(ticket.kommentare)) ticket.kommentare = [];
             ticket.kommentare.push({
                 author: currentUser ? currentUser.name : 'System',
                 date: new Date().toLocaleString('de-DE'),
                 text: `Status geändert von "${oldStatus}" zu "${newStatus}".`
             });
-
             saveTicketsToStorage();
             showNotification(`✅ Status von Ticket #${ticketId} geändert: ${newStatus}`, 'success');
-            
             updateStats();    
             displayTickets(); 
-
-            openTicketDetail(ticketId); // Modal neu laden mit aktuellen Daten
+            openTicketDetail(ticketId); 
         }
 
-
-        // Ticket-Details öffnen
         function openTicketDetail(ticketId) {
             const ticket = tickets.find(t => t.id === ticketId);
             if (!ticket) return;
-
-            if (!Array.isArray(ticket.kommentare)) {
-                ticket.kommentare = [];
-            }
-            
+            if (!Array.isArray(ticket.kommentare)) ticket.kommentare = [];
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
             const editBtn = document.getElementById('editTicketBtn');
-            
             modalTitle.textContent = `🎫 Ticket #${ticket.id}`;
             editBtn.onclick = () => startEditTicket(ticketId); 
-            
             const statusDropdownHTML = `
                 <select class="form-input status-dropdown-filter status-${ticket.status.toLowerCase().replace(/ /g, '-')}" 
                         onchange="changeTicketStatusFromModal(${ticket.id}, this.value)">
@@ -1441,60 +1566,46 @@
                     <option value="Gelöst" ${ticket.status === 'Gelöst' ? 'selected' : ''}>🟢 Gelöst</option>
                 </select>
             `;
-
             modalBody.innerHTML = `
                 <div class="ticket-detail-grid">
                     <div class="detail-item">
-                        <div class="detail-label">👤 Kunde</div>
-                        <div class="detail-value">${ticket.kundenName}</div>
+                        <div class="detail-label">👤 Kunde</div> <div class="detail-value">${ticket.kundenName}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">🏢 Firma</div>
-                        <div class="detail-value">${ticket.firma}</div>
+                        <div class="detail-label">🏢 Firma</div> <div class="detail-value">${ticket.firma}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">📞 Telefon</div>
-                        <div class="detail-value">${ticket.telefon}</div>
+                        <div class="detail-label">📞 Telefon</div> <div class="detail-value">${ticket.telefon}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">📧 E-Mail</div>
-                        <div class="detail-value">${ticket.kundenEmail || 'Nicht angegeben'}</div>
+                        <div class="detail-label">📧 E-Mail</div> <div class="detail-value">${ticket.kundenEmail || 'Nicht angegeben'}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">🔧 Gruppe</div>
-                        <div class="detail-value">${ticket.gruppe}</div>
+                        <div class="detail-label">🔧 Gruppe</div> <div class="detail-value">${ticket.gruppe}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">🚨 Priorität</div>
-                        <div class="detail-value">${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}</div>
+                        <div class="detail-label">🚨 Priorität</div> <div class="detail-value">${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">📊 Status</div>
-                        <div class="detail-value">${statusDropdownHTML}</div>
+                        <div class="detail-label">📊 Status</div> <div class="detail-value">${statusDropdownHTML}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">📋 Kategorie</div>
-                        <div class="detail-value">${ticket.kategorie || 'Nicht angegeben'}</div>
+                        <div class="detail-label">📋 Kategorie</div> <div class="detail-value">${ticket.kategorie || 'Nicht angegeben'}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">👨‍💼 Zugewiesen</div>
-                        <div class="detail-value">${ticket.zugewiesen || 'Nicht zugewiesen'}</div>
+                        <div class="detail-label">👨‍💼 Zugewiesen</div> <div class="detail-value">${ticket.zugewiesen || 'Nicht zugewiesen'}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">⏰ Erstellt</div>
-                        <div class="detail-value">${ticket.erstelltAm}</div>
+                        <div class="detail-label">⏰ Erstellt</div> <div class="detail-value">${ticket.erstelltAm}</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">👨‍💼 Ersteller</div>
-                        <div class="detail-value">${ticket.ersteller}</div>
+                        <div class="detail-label">👨‍💼 Ersteller</div> <div class="detail-value">${ticket.ersteller}</div>
                     </div>
                 </div>
-                
                 <div class="problem-description">
                     <div class="detail-label">📝 Störungsbeschreibung</div>
                     <div class="detail-value" style="white-space: pre-wrap; margin-top: 8px;">${ticket.stoerung}</div>
                 </div>
-                
                 <div class="comments-section">
                     <h4 style="margin-bottom: 15px; color: #374151;">💬 Kommentare (${ticket.kommentare.length})</h4>
                     <div id="commentsList">
@@ -1516,44 +1627,35 @@
                     </div>
                 </div>
             `;
-            
             document.getElementById('ticketModal').classList.add('show');
         }
 
-        // Kommentar hinzufügen
         function addComment(ticketId) {
             const ticket = tickets.find(t => t.id === ticketId);
             const commentText = document.getElementById('newComment').value.trim();
-            
             if (!commentText) {
                 showNotification('❌ Bitte geben Sie einen Kommentar ein!', 'error');
                 return;
             }
-            
             if (!Array.isArray(ticket.kommentare)) ticket.kommentare = []; 
             ticket.kommentare.push({
                 author: currentUser ? currentUser.name : 'System',
                 date: new Date().toLocaleString('de-DE'),
                 text: commentText
             });
-            
             saveTicketsToStorage();
             showNotification('✅ Kommentar hinzugefügt!', 'success');
             openTicketDetail(ticketId); 
         }
 
-        // Modal schließen
         function closeModal() {
             document.getElementById('ticketModal').classList.remove('show');
         }
 
-        // Ticket bearbeiten starten (aus dem Detail-Modal)
         function startEditTicket(ticketIdToEdit) { 
             const ticket = tickets.find(t => t.id === ticketIdToEdit);
             if (!ticket) return;
-            
             currentEditingTicket = ticket; 
-            
             document.getElementById('editKundenName').value = ticket.kundenName;
             document.getElementById('editFirma').value = ticket.firma;
             document.getElementById('editTelefon').value = ticket.telefon;
@@ -1564,26 +1666,19 @@
             document.getElementById('editStoerung').value = ticket.stoerung;
             document.getElementById('editKategorie').value = ticket.kategorie || '';
             document.getElementById('editZugewiesen').value = ticket.zugewiesen || '';
-            
-            // Apply color to status dropdown in edit modal
             const editStatusDropdown = document.getElementById('editStatus');
             editStatusDropdown.className = `form-input status-dropdown-filter status-${ticket.status.toLowerCase().replace(/ /g, '-')}`;
-
-
             closeModal(); 
             document.getElementById('editModal').classList.add('show'); 
         }
 
-        // Edit-Modal schließen
         function closeEditModal() {
             document.getElementById('editModal').classList.remove('show');
             currentEditingTicket = null;
         }
 
-        // Ticket-Änderungen speichern (aus dem Edit-Modal)
         function saveTicketChanges() {
             if (!currentEditingTicket) return;
-            
             const updatedData = {
                 kundenName: document.getElementById('editKundenName').value.trim(),
                 firma: document.getElementById('editFirma').value.trim(),
@@ -1596,18 +1691,14 @@
                 stoerung: document.getElementById('editStoerung').value.trim(),
                 kategorie: document.getElementById('editKategorie').value
             };
-            
             if (!updatedData.kundenName || !updatedData.firma || !updatedData.telefon || 
                 !updatedData.gruppe || !updatedData.stoerung) {
                 showNotification('❌ Bitte füllen Sie alle Pflichtfelder aus!', 'error');
                 return;
             }
-            
             const oldStatus = currentEditingTicket.status;
             const oldZugewiesen = currentEditingTicket.zugewiesen || 'Nicht zugewiesen';
-
             if (!Array.isArray(currentEditingTicket.kommentare)) currentEditingTicket.kommentare = [];
-
             if (oldStatus !== updatedData.status) {
                 currentEditingTicket.kommentare.push({
                     author: currentUser ? currentUser.name : 'System',
@@ -1615,7 +1706,6 @@
                     text: `Status geändert von "${oldStatus}" zu "${updatedData.status}" (Bearbeitungsformular).`
                 });
             }
-            
             if (oldZugewiesen !== (updatedData.zugewiesen || 'Nicht zugewiesen')) {
                 currentEditingTicket.kommentare.push({
                     author: currentUser ? currentUser.name : 'System',
@@ -1623,56 +1713,44 @@
                     text: `Zuweisung geändert von "${oldZugewiesen}" zu "${updatedData.zugewiesen || 'Nicht zugewiesen'}".`
                 });
             }
-            
             Object.assign(currentEditingTicket, updatedData); 
-            
             saveTicketsToStorage();
             showNotification(`✅ Ticket #${currentEditingTicket.id} erfolgreich aktualisiert!`, 'success');
-            
             closeEditModal();
             displayTickets();
             updateStats();
         }
 
-        // Ticket bearbeiten (aus der Ticket-Liste, öffnet Edit-Modal)
         function editTicket(ticketId) {
             startEditTicket(ticketId); 
         }
 
-        // Ticket löschen
         function deleteTicket(ticketId) {
-            // Consider implementing a custom modal for confirmation
-            // For now, direct deletion with a notification
             const ticketNameToDelete = tickets.find(t => t.id === ticketId)?.kundenName || `Ticket #${ticketId}`;
-            showNotification(`Möchten Sie "${ticketNameToDelete}" wirklich löschen? (Bestätigung UI benötigt)`, 'info');
-            
-            // Placeholder for actual deletion confirmation logic
-            // For now, let's proceed with deletion for testing:
-            tickets = tickets.filter(t => t.id !== ticketId);
-            saveTicketsToStorage();
-            showNotification(`🗑️ "${ticketNameToDelete}" gelöscht`, 'success');
-            displayTickets();
-            updateStats();
+             // Using window.confirm for simplicity, replace with custom modal in future
+            if (window.confirm(`Möchten Sie das Ticket "${ticketNameToDelete}" wirklich löschen?`)) {
+                tickets = tickets.filter(t => t.id !== ticketId);
+                saveTicketsToStorage();
+                showNotification(`🗑️ Ticket "${ticketNameToDelete}" gelöscht`, 'success');
+                displayTickets();
+                updateStats();
+                closeModal(); // Close detail modal if open
+            }
         }
 
-        // Tickets filtern
         function filterTickets() {
             displayTickets();
         }
 
-        // Priority Icon
         function getPriorityIcon(priority) {
             const icons = { 'Niedrig': '🟢', 'Normal': '🔵', 'Hoch': '🟡', 'Kritisch': '🔴' };
             return icons[priority] || '🔵';
         }
-        // Status Icon
         function getStatusIcon(status) {
             const icons = { 'Offen': '🔴', 'In Bearbeitung': '🟡', 'Gelöst': '🟢'};
-            return icons[status] || '❓'; // Fallback icon
+            return icons[status] || '❓'; 
         }
 
-
-        // Benachrichtigungen
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
@@ -1682,10 +1760,9 @@
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => notification.remove(), 300);
-            }, type === 'error' ? 5000 : 3000); 
+            }, type === 'error' || message.includes("wirklich löschen?") ? 5000 : 3000); // Longer for errors and confirmations
         }
 
-        // Modal außerhalb schließen
         window.onclick = function(event) {
             const ticketModal = document.getElementById('ticketModal');
             const editModal = document.getElementById('editModal');
@@ -1693,7 +1770,6 @@
             if (event.target === editModal) closeEditModal();
         }
 
-        // Escape-Taste zum Schließen
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 if (document.getElementById('ticketModal').classList.contains('show')) closeModal();
@@ -1701,8 +1777,8 @@
             }
         });
 
-        // Demo-Daten für neue Installationen hinzufügen
         function addDemoData() {
+            // This function is now primarily for tickets. Users are handled by loadSiteUsersFromStorage.
             if (tickets.length === 0) { 
                 const demoTickets = [
                     {
@@ -1725,26 +1801,26 @@
                 tickets = demoTickets;
                 ticketCounter = 3; 
                 saveTicketsToStorage();
-                console.log('✅ Demo-Daten hinzugefügt');
+                console.log('✅ Demo-Tickets hinzugefügt');
                 showNotification('ℹ️ Demo-Tickets wurden geladen.', 'info');
             }
         }
         
-        // Event listener for editStatus dropdown in the edit modal to apply color classes
         document.getElementById('editStatus').addEventListener('change', function() {
             this.className = `form-input status-dropdown-filter status-${this.value.toLowerCase().replace(/ /g, '-')}`;
         });
 
-
         window.addEventListener('load', function() {
+            // loadSiteUsersFromStorage and loadTicketsFromStorage are called in DOMContentLoaded
             setTimeout(() => { 
-                addDemoData();
+                addDemoData(); // Add demo tickets if none exist
                 updateStats(); 
                 displayTickets(); 
+                displaySiteUsers(); // Ensure users are displayed if admin tab is active
             }, 500); 
         });
 
-        console.log('📱 Ticket System mit korrigierter Statusanzeige geladen');
+        console.log('📱 Ticket System mit Benutzerverwaltung und korrigierter Statusanzeige geladen');
     </script>
 </body>
 </html>

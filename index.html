@@ -1,4 +1,679 @@
-<!DOCTYPE html>
+<div id="noTickets" class="no-tickets" style="display: none;">
+                <div style="text-align: center; padding: 40px; color: #6c757d;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
+                    <strong>Keine Tickets vorhanden</strong><br>
+                    <small>Erstellen Sie Ihr erstes Ticket über den "Neu" Tab</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Tab -->
+        <div id="admin-tab" class="tab-content">
+            <h3>⚙️ Administration</h3>
+            <p style="text-align: center; padding: 40px; color: #6c757d;">
+                <strong>👑 Admin-Panel</strong><br>
+                Erweiterte Einstellungen werden implementiert.
+            </p>
+        </div>
+        
+        <button class="logout-btn" onclick="logout()">
+            Abmelden
+        </button>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">🎫 Ticket Details</div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body" id="modalBody">
+                <!-- Ticket details will be inserted here -->
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Schließen</button>
+                <button class="btn btn-primary" id="editTicketBtn" onclick="startEditTicket()">✏️ Bearbeiten</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Ticket Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">✏️ Ticket bearbeiten</div>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="editTicketForm">
+                    <div class="form-group">
+                        <label class="form-label">👤 Kundenname *</label>
+                        <input type="text" class="form-input" id="editKundenName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🏢 Firma *</label>
+                        <input type="text" class="form-input" id="editFirma" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📞 Telefon *</label>
+                        <input type="tel" class="form-input" id="editTelefon" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📧 E-Mail</label>
+                        <input type="email" class="form-input" id="editKundenEmail">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">👨‍💼 Zugewiesen an</label>
+                        <select class="form-input" id="editZugewiesen">
+                            <option value="">Nicht zugewiesen</option>
+                            <option value="Administrator">👑 Administrator</option>
+                            <option value="Max Schmidt">👤 Max Schmidt</option>
+                            <option value="Anna Weber">👩‍💻 Anna Weber</option>
+                            <option value="Thomas Müller">🧑‍🔧 Thomas Müller</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🔧 Gruppe *</label>
+                        <select class="form-input" id="editGruppe" required>
+                            <option value="Software">💻 Software</option>
+                            <option value="Hardware">🖥️ Hardware</option>
+                            <option value="Netzwerk">🌐 Netzwerk</option>
+                            <option value="Büro">📋 Büro/Admin</option>
+                            <option value="Telefon">📞 Telefon/VoIP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🚨 Priorität *</label>
+                        <select class="form-input" id="editPriorität" required>
+                            <option value="Niedrig">🟢 Niedrig - Kann warten</option>
+                            <option value="Normal">🔵 Normal - Standard</option>
+                            <option value="Hoch">🟡 Hoch - Bald bearbeiten</option>
+                            <option value="Kritisch">🔴 Kritisch - Sofort!</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📊 Status *</label>
+                        <select class="form-input" id="editStatus" required>
+                            <option value="Offen">🔴 Offen</option>
+                            <option value="In Bearbeitung">🟡 In Bearbeitung</option>
+                            <option value="Gelöst">🟢 Gelöst</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📝 Störungsbeschreibung *</label>
+                        <textarea class="form-input" id="editStoerung" required style="min-height: 120px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📋 Kategorie</label>
+                        <select class="form-input" id="editKategorie">
+                            <option value="">Optional...</option>
+                            <option value="Bug">🐛 Fehler/Bug</option>
+                            <option value="Feature">✨ Neue Funktion</option>
+                            <option value="Support">🆘 Support-Anfrage</option>
+                            <option value="Installation">⚙️ Installation</option>
+                            <option value="Training">📚 Schulung</option>
+                            <option value="Wartung">🔧 Wartung</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveTicketChanges()">💾 Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo-Benutzer
+        const users = {
+            admin: { name: 'Administrator', email: 'admin@firma.de', role: 'admin' },
+            user: { name: 'Max Schmidt', email: 'max@firma.de', role: 'user' },
+            guest: { name: 'Gast', email: 'gast@demo.de', role: 'guest' }
+        };
+
+        let currentUser = null;
+        let tickets = []; // Ticket-Speicher
+        let ticketCounter = 1; // Ticket-ID Counter
+        let currentEditingTicket = null; // Aktuell bearbeitetes Ticket
+
+        // LocalStorage Funktionen
+        function saveTicketsToStorage() {
+            try {
+                localStorage.setItem('ticketSystemTickets', JSON.stringify(tickets));
+                localStorage.setItem('ticketSystemCounter', ticketCounter.toString());
+                console.log('✅ Tickets gespeichert:', tickets.length);
+            } catch (error) {
+                console.error('❌ Fehler beim Speichern:', error);
+                showNotification('⚠️ Speichern fehlgeschlagen', 'error');
+            }
+        }
+
+        function loadTicketsFromStorage() {
+            try {
+                const savedTickets = localStorage.getItem('ticketSystemTickets');
+                const savedCounter = localStorage.getItem('ticketSystemCounter');
+                
+                if (savedTickets) {
+                    tickets = JSON.parse(savedTickets);
+                    console.log('✅ Tickets geladen:', tickets.length);
+                }
+                
+                if (savedCounter) {
+                    ticketCounter = parseInt(savedCounter);
+                    console.log('✅ Counter geladen:', ticketCounter);
+                }
+                
+                // Statistiken beim Laden aktualisieren
+                updateStats();
+                
+            } catch (error) {
+                console.error('❌ Fehler beim Laden:', error);
+                tickets = [];
+                ticketCounter = 1;
+            }
+        }
+
+        // Beim Laden der Seite Tickets aus LocalStorage laden
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTicketsFromStorage();
+            console.log('📱 Ticket System geladen - Tickets:', tickets.length);
+        });
+
+        // Schnell-Login
+        function quickLogin(userType) {
+            const user = users[userType];
+            showNotification(`✅ Angemeldet als ${user.name}`, 'success');
+            loginUser(user);
+        }
+
+        // Login-Form Handler
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Demo-Login prüfen
+            if ((email === 'admin@firma.de' && password === 'admin123') ||
+                (email === 'max@firma.de' && password === 'user123')) {
+                
+                const user = email.includes('admin') ? users.admin : users.user;
+                showNotification(`✅ Willkommen ${user.name}!`, 'success');
+                loginUser(user);
+            } else {
+                showNotification('❌ Ungültige Anmeldedaten!', 'error');
+            }
+        }
+
+        // Benutzer anmelden
+        function loginUser(user) {
+            currentUser = user;
+            
+            setTimeout(() => {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                document.getElementById('userInfo').textContent = `Angemeldet als: ${user.name} (${user.role})`;
+                
+                // Admin-Tab anzeigen
+                if (user.role === 'admin') {
+                    document.getElementById('adminTab').style.display = 'block';
+                }
+                
+                // Tickets beim Login laden und anzeigen
+                loadTicketsFromStorage();
+                if (tickets.length > 0) {
+                    updateStats();
+                }
+            }, 800);
+        }
+
+        // Abmelden
+        function logout() {
+            showNotification('👋 Abgemeldet', 'info');
+            setTimeout(() => {
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('adminTab').style.display = 'none';
+                document.getElementById('loginForm').reset();
+                currentUser = null;
+            }, 1000);
+        }
+
+        // Tab wechseln
+        function showTab(tabName) {
+            // Alle Tabs ausblenden
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Gewählten Tab anzeigen
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            // Tickets laden wenn Tickets-Tab geöffnet wird
+            if (tabName === 'tickets') {
+                displayTickets();
+            }
+        }
+
+        // Teams testen
+        function testTeams() {
+            showNotification('📢 Teams-Test wird gestartet...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Teams-Integration erfolgreich getestet!', 'success');
+            }, 2000);
+        }
+
+        // Ticket erstellen
+        function createTicket(event) {
+            event.preventDefault();
+            
+            // Formulardaten sammeln
+            const ticketData = {
+                id: ticketCounter++,
+                kundenName: document.getElementById('kundenName').value.trim(),
+                firma: document.getElementById('firma').value.trim(),
+                telefon: document.getElementById('telefon').value.trim(),
+                kundenEmail: document.getElementById('kundenEmail').value.trim(),
+                zugewiesen: document.getElementById('zugewiesen').value,
+                gruppe: document.getElementById('gruppe').value,
+                prioritaet: document.getElementById('prioritaet').value,
+                stoerung: document.getElementById('stoerung').value.trim(),
+                kategorie: document.getElementById('kategorie').value,
+                status: 'Offen',
+                ersteller: currentUser ? currentUser.name : 'System',
+                erstelltAm: new Date().toLocaleString('de-DE'),
+                kommentare: []
+            };
+            
+            // Validierung
+            if (!ticketData.kundenName || !ticketData.firma || !ticketData.telefon || 
+                !ticketData.gruppe || !ticketData.stoerung) {
+                showNotification('❌ Bitte füllen Sie alle Pflichtfelder (*) aus!', 'error');
+                return;
+            }
+            
+            // Ticket speichern
+            tickets.push(ticketData);
+            saveTicketsToStorage(); // Sofort speichern!
+            console.log('Neues Ticket erstellt:', ticketData);
+            
+            // Erfolgs-Nachricht
+            showNotification(
+                `✅ Ticket #${ticketData.id} erfolgreich erstellt!\n` +
+                `Kunde: ${ticketData.kundenName}\n` +
+                `Ersteller: ${ticketData.ersteller}\n` +
+                `Priorität: ${ticketData.prioritaet}`, 
+                'success'
+            );
+            
+            // Formular zurücksetzen
+            document.getElementById('ticketForm').reset();
+            
+            // Optional: Automatisch zu Dashboard wechseln
+            setTimeout(() => {
+                showTab('dashboard');
+                // Tab-Button auch visuell aktivieren
+                document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.nav-tab')[0].classList.add('active');
+            }, 2000);
+            
+            // Statistiken aktualisieren
+            updateStats();
+            
+            // Teams-Benachrichtigung senden (Simulation)
+            sendTeamsNotification(ticketData);
+        }
+
+        // Formular leeren
+        function clearTicketForm() {
+            if (confirm('Möchten Sie wirklich alle Eingaben löschen?')) {
+                document.getElementById('ticketForm').reset();
+                showNotification('🗑️ Formular wurde geleert', 'info');
+            }
+        }
+
+        // Statistiken aktualisieren
+        function updateStats() {
+            const offeneTickets = tickets.filter(t => t.status === 'Offen').length;
+            const inBearbeitung = tickets.filter(t => t.status === 'In Bearbeitung').length;
+            const geloeste = tickets.filter(t => t.status === 'Gelöst').length;
+            const erfolgsrate = tickets.length > 0 ? Math.round((geloeste / tickets.length) * 100) : 0;
+            
+            // Statistik-Karten aktualisieren
+            const statCards = document.querySelectorAll('.stat-number');
+            if (statCards.length >= 4) {
+                statCards[0].textContent = offeneTickets;
+                statCards[1].textContent = inBearbeitung;
+                statCards[2].textContent = geloeste;
+                statCards[3].textContent = erfolgsrate + '%';
+            }
+        }
+
+        // Teams-Benachrichtigung senden (Simulation)
+        function sendTeamsNotification(ticketData) {
+            console.log('Teams-Benachrichtigung für Ticket #' + ticketData.id);
+            
+            // Simuliere Teams-Nachricht
+            const teamsMessage = {
+                title: `🎫 Neues Ticket #${ticketData.id}`,
+                kunde: ticketData.kundenName,
+                firma: ticketData.firma,
+                prioritaet: ticketData.prioritaet,
+                gruppe: ticketData.gruppe,
+                problem: ticketData.stoerung.substring(0, 100) + '...'
+            };
+            
+            // In echter Version würde hier der Teams-Webhook aufgerufen
+            setTimeout(() => {
+                console.log('📢 Teams-Nachricht gesendet:', teamsMessage);
+            }, 1000);
+        }
+
+        // Tickets anzeigen
+        function displayTickets() {
+            const ticketsList = document.getElementById('ticketsList');
+            const noTickets = document.getElementById('noTickets');
+            const filter = document.getElementById('ticketFilter').value;
+            
+            console.log('displayTickets aufgerufen - Gesamt Tickets:', tickets.length, 'Filter:', filter);
+            
+            // Tickets filtern
+            let filteredTickets = tickets;
+            if (filter !== 'all') {
+                filteredTickets = tickets.filter(ticket => ticket.status === filter);
+            }
+            
+            console.log('Gefilterte Tickets:', filteredTickets.length);
+            
+            // Sortieren: Neueste zuerst
+            filteredTickets.sort((a, b) => b.id - a.id);
+            
+            if (filteredTickets.length === 0) {
+                console.log('Keine Tickets zu zeigen');
+                ticketsList.style.display = 'none';
+                noTickets.style.display = 'block';
+                return;
+            }
+            
+            ticketsList.style.display = 'block';
+            noTickets.style.display = 'none';
+            
+            // Tickets HTML generieren
+            ticketsList.innerHTML = filteredTickets.map(ticket => `
+                <div class="ticket-card" onclick="openTicketDetail(${ticket.id})">
+                    <div class="ticket-header">
+                        <span class="ticket-id">#${ticket.id}</span>
+                        <span class="ticket-priority priority-${ticket.prioritaet.toLowerCase()}">
+                            ${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}
+                        </span>
+                    </div>
+                    
+                    <div class="ticket-customer">${ticket.kundenName}</div>
+                    <div class="ticket-company">🏢 ${ticket.firma} • 📞 ${ticket.telefon}</div>
+                    ${ticket.zugewiesen ? `<div class="assigned-user">👨‍💼 Zugewiesen: ${ticket.zugewiesen}</div>` : ''}
+                    
+                    <div class="ticket-description">
+                        ${ticket.stoerung}
+                    </div>
+                    
+                    <div class="ticket-meta">
+                        <div>
+                            <select class="status-dropdown status-${ticket.status.toLowerCase().replace(' ', '-')}" 
+                                    onchange="changeTicketStatusDirect(${ticket.id}, this.value)" 
+                                    onclick="event.stopPropagation()">
+                                <option value="Offen" ${ticket.status === 'Offen' ? 'selected' : ''}>🔴 Offen</option>
+                                <option value="In Bearbeitung" ${ticket.status === 'In Bearbeitung' ? 'selected' : ''}>🟡 In Bearbeitung</option>
+                                <option value="Gelöst" ${ticket.status === 'Gelöst' ? 'selected' : ''}>🟢 Gelöst</option>
+                            </select>
+                            • 🔧 ${ticket.gruppe}
+                        </div>
+                        <div>${ticket.erstelltAm}</div>
+                    </div>
+                    
+                    <div class="ticket-actions">
+                        <button class="action-menu-btn" onclick="event.stopPropagation(); editTicket(${ticket.id})">
+                            ✏️ Bearbeiten
+                        </button>
+                        <button class="action-menu-btn" onclick="event.stopPropagation(); deleteTicket(${ticket.id})">
+                            🗑️ Löschen
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Direkter Status-Wechsel über Dropdown
+        function changeTicketStatusDirect(ticketId, newStatus) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket || ticket.status === newStatus) return;
+            
+            const oldStatus = ticket.status;
+            ticket.status = newStatus;
+            
+            // Kommentar hinzufügen
+            const statusComment = {
+                author: currentUser ? currentUser.name : 'System',
+                date: new Date().toLocaleString('de-DE'),
+                text: `Status geändert: ${oldStatus} → ${newStatus}`
+            };
+            ticket.kommentare.push(statusComment);
+            
+            console.log('Status geändert für Ticket:', ticket.id, 'von', oldStatus, 'zu', newStatus);
+            console.log('Aktuelle Tickets:', tickets.length);
+            
+            saveTicketsToStorage(); // Änderungen speichern!
+            
+            showNotification(`✅ Status von Ticket #${ticketId} geändert: ${newStatus}`, 'success');
+            
+            // Listen aktualisieren - Tickets sollten erhalten bleiben
+            displayTickets();
+            updateStats();
+        }
+
+        // Ticket-Details öffnen
+        function openTicketDetail(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const editBtn = document.getElementById('editTicketBtn');
+            
+            modalTitle.textContent = `🎫 Ticket #${ticket.id}`;
+            editBtn.onclick = () => startEditTicket(ticketId);
+            
+            modalBody.innerHTML = `
+                <div class="ticket-detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">👤 Kunde</div>
+                        <div class="detail-value">${ticket.kundenName}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🏢 Firma</div>
+                        <div class="detail-value">${ticket.firma}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📞 Telefon</div>
+                        <div class="detail-value">${ticket.telefon}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📧 E-Mail</div>
+                        <div class="detail-value">${ticket.kundenEmail || 'Nicht angegeben'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🔧 Gruppe</div>
+                        <div class="detail-value">${ticket.gruppe}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🚨 Priorität</div>
+                        <div class="detail-value">${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📊 Status</div>
+                        <div class="detail-value">${getStatusIcon(ticket.status)} ${ticket.status}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📋 Kategorie</div>
+                        <div class="detail-value">${ticket.kategorie || 'Nicht angegeben'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">👨‍💼 Zugewiesen</div>
+                        <div class="detail-value">${ticket.zugewiesen || 'Nicht zugewiesen'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">⏰ Erstellt</div>
+                        <div class="detail-value">${ticket.erstelltAm}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">👨‍💼 Ersteller</div>
+                        <div class="detail-value">${ticket.ersteller}</div>
+                    </div>
+                </div>
+                
+                <div class="problem-description">
+                    <div class="detail-label">📝 Störungsbeschreibung</div>
+                    <div class="detail-value" style="white-space: pre-wrap; margin-top: 8px;">${ticket.stoerung}</div>
+                </div>
+                
+                <div class="comments-section">
+                    <h4 style="margin-bottom: 15px; color: #374151;">💬 Kommentare (${ticket.kommentare.length})</h4>
+                    
+                    <div id="commentsList">
+                        ${ticket.kommentare.map(comment => `
+                            <div class="comment">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.author}</span>
+                                    <span class="comment-date">${comment.date}</span>
+                                </div>
+                                <div class="comment-text">${comment.text}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    ${ticket.kommentare.length === 0 ? '<p style="text-align: center; color: #6b7280; padding: 20px;">Noch keine Kommentare vorhanden</p>' : ''}
+                    
+                    <div class="comment-form">
+                        <textarea class="comment-input" id="newComment" placeholder="Neuen Kommentar hinzufügen..."></textarea>
+                        <button class="btn btn-primary" onclick="addComment(${ticket.id})" style="margin-top: 10px; width: 100%;">
+                            💬 Kommentar hinzufügen
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('ticketModal').classList.add('show');
+        }
+
+        // Kommentar hinzufügen
+        function addComment(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            const commentText = document.getElementById('newComment').value.trim();
+            
+            if (!commentText) {
+                showNotification('❌ Bitte geben Sie einen Kommentar ein!', 'error');
+                return;
+            }
+            
+            const newComment = {
+                author: currentUser ? currentUser.name : 'System',
+                date: new Date().toLocaleString('de-DE'),
+                text: commentText
+            };
+            
+            ticket.kommentare.push(newComment);
+            
+            saveTicketsToStorage(); // Kommentar speichern!
+            
+            showNotification('✅ Kommentar hinzugefügt!', 'success');
+            
+            // Modal-Inhalt aktualisieren
+            openTicketDetail(ticketId);
+        }
+
+        // Modal schließen
+        function closeModal() {
+            document.getElementById('ticketModal').classList.remove('show');
+        }
+
+        // Ticket bearbeiten starten
+        function startEditTicket(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            currentEditingTicket = ticket;
+            
+            // Formular mit aktuellen Werten füllen
+            document.getElementById('editKundenName').value = ticket.kundenName;
+            document.getElementById('editFirma').value = ticket.firma;
+            document.getElementById('editTelefon').value = ticket.telefon;
+            document.getElementById('editKundenEmail').value = ticket.kundenEmail || '';
+            document.getElementById('editGruppe').value = ticket.gruppe;
+            document.getElementById('editPriorität').value = ticket.prioritaet;
+            document.getElementById('editStatus').value = ticket.status;
+            document.getElementById('editStoerung').value = ticket.stoerung;
+            document.getElementById('editKategorie').value = ticket.kategorie || '';
+            document.getElementById('editZugewiesen').value = ticket.zugewiesen || '';
+            
+            // Detail-Modal schließen und Edit-Modal öffnen
+            closeModal();
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        // Edit-Modal schließen
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            currentEditingTicket = null;
+        }
+
+        // Ticket-Änderungen speichern
+        function saveTicketChanges() {
+            if (!currentEditingTicket) return;
+            
+            // Neue Werte aus dem Formular holen
+            const updatedData = {
+                kundenName: document.getElementById('editKundenName').value.trim(),
+                firma: document.getElementById('editFirma').value.trim(),
+                telefon: document.getElementById('editTelefon').value.trim(),
+                kundenEmail: document.getElementById('editKundenEmail').value.trim(),
+                zugewiesen: document.getElementById('editZugewiesen').value,
+                gruppe: document.getElementById('editGruppe').value,
+                prioritaet: document.getElementById('editPriorität').value,
+                status: document.getElementById('editStatus').value,
+                stoerung: document.getElementById('editStoerung').value.trim(),
+                kategorie: document.getElementById('editKategorie').value
+            };
+            
+            // Validierung
+            if (!updatedData.kundenName || !updatedData.firma || !updatedData.telefon || 
+                !updatedData.gruppe || !updatedData.stoerung) {
+                showNotification('❌ Bitte füllen Sie alle Pflichtfelder aus!', 'error');
+                return;
+            }
+            
+            // Status-Änderung kommentieren
+            const oldStatus = currentEditingTicket.status;
+            const oldZugewiesen = currentEditingTicket.zugewiesen || 'Nicht zugewiesen';
+            
+            if (oldStatus !== updatedData.status)<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -822,19 +1497,19 @@
         <div id="dashboard-tab" class="tab-content active">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">12</div>
+                    <div class="stat-number">0</div>
                     <div class="stat-label">Offen</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">5</div>
+                    <div class="stat-number">0</div>
                     <div class="stat-label">Bearbeitung</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">89</div>
+                    <div class="stat-number">0</div>
                     <div class="stat-label">Gelöst</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">94%</div>
+                    <div class="stat-number">0%</div>
                     <div class="stat-label">Erfolgsrate</div>
                 </div>
             </div>
@@ -959,751 +1634,4 @@
                 <!-- Tickets werden hier dynamisch eingefügt -->
             </div>
             
-            <div id="noTickets" class="no-tickets" style="display: none;">
-                <div style="text-align: center; padding: 40px; color: #6c757d;">
-                    <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
-                    <strong>Keine Tickets vorhanden</strong><br>
-                    <small>Erstellen Sie Ihr erstes Ticket über den "Neu" Tab</small>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Admin Tab -->
-        <div id="admin-tab" class="tab-content">
-            <h3>⚙️ Administration</h3>
-            <p style="text-align: center; padding: 40px; color: #6c757d;">
-                <strong>👑 Admin-Panel</strong><br>
-                Erweiterte Einstellungen werden implementiert.
-            </p>
-        </div>
-        
-        <button class="logout-btn" onclick="logout()">
-            Abmelden
-        </button>
-    </div>
-
-    <!-- Ticket Detail Modal -->
-    <div id="ticketModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title" id="modalTitle">🎫 Ticket Details</div>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            
-            <div class="modal-body" id="modalBody">
-                <!-- Ticket details will be inserted here -->
-            </div>
-            
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Schließen</button>
-                <button class="btn btn-primary" id="editTicketBtn" onclick="startEditTicket()">✏️ Bearbeiten</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Ticket Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">✏️ Ticket bearbeiten</div>
-                <button class="close-btn" onclick="closeEditModal()">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <form id="editTicketForm">
-                    <div class="form-group">
-                        <label class="form-label">👤 Kundenname *</label>
-                        <input type="text" class="form-input" id="editKundenName" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">🏢 Firma *</label>
-                        <input type="text" class="form-input" id="editFirma" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📞 Telefon *</label>
-                        <input type="tel" class="form-input" id="editTelefon" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📧 E-Mail</label>
-                        <input type="email" class="form-input" id="editKundenEmail">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">🔧 Gruppe *</label>
-                        <select class="form-input" id="editGruppe" required>
-                            <option value="Software">💻 Software</option>
-                            <option value="Hardware">🖥️ Hardware</option>
-                            <option value="Netzwerk">🌐 Netzwerk</option>
-                            <option value="Büro">📋 Büro/Admin</option>
-                            <option value="Telefon">📞 Telefon/VoIP</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">🚨 Priorität *</label>
-                        <select class="form-input" id="editPriorität" required>
-                            <option value="Niedrig">🟢 Niedrig - Kann warten</option>
-                            <option value="Normal">🔵 Normal - Standard</option>
-                            <option value="Hoch">🟡 Hoch - Bald bearbeiten</option>
-                            <option value="Kritisch">🔴 Kritisch - Sofort!</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">👨‍💼 Zugewiesen an</label>
-                        <select class="form-input" id="editZugewiesen">
-                            <option value="">Nicht zugewiesen</option>
-                            <option value="Administrator">👑 Administrator</option>
-                            <option value="Max Schmidt">👤 Max Schmidt</option>
-                            <option value="Anna Weber">👩‍💻 Anna Weber</option>
-                            <option value="Thomas Müller">🧑‍🔧 Thomas Müller</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📊 Status *</label>
-                        <select class="form-input" id="editStatus" required>
-                            <option value="Offen">🔴 Offen</option>
-                            <option value="In Bearbeitung">🟡 In Bearbeitung</option>
-                            <option value="Gelöst">🟢 Gelöst</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📝 Störungsbeschreibung *</label>
-                        <textarea class="form-input" id="editStoerung" required style="min-height: 120px; resize: vertical;"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📋 Kategorie</label>
-                        <select class="form-input" id="editKategorie">
-                            <option value="">Optional...</option>
-                            <option value="Bug">🐛 Fehler/Bug</option>
-                            <option value="Feature">✨ Neue Funktion</option>
-                            <option value="Support">🆘 Support-Anfrage</option>
-                            <option value="Installation">⚙️ Installation</option>
-                            <option value="Training">📚 Schulung</option>
-                            <option value="Wartung">🔧 Wartung</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeEditModal()">Abbrechen</button>
-                <button class="btn btn-primary" onclick="saveTicketChanges()">💾 Speichern</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Demo-Benutzer
-        const users = {
-            admin: { name: 'Administrator', email: 'admin@firma.de', role: 'admin' },
-            user: { name: 'Max Schmidt', email: 'max@firma.de', role: 'user' },
-            guest: { name: 'Gast', email: 'gast@demo.de', role: 'guest' }
-        };
-
-        let currentUser = null;
-        let tickets = []; // Ticket-Speicher
-        let ticketCounter = 1; // Ticket-ID Counter
-        let currentEditingTicket = null; // Aktuell bearbeitetes Ticket
-
-        // Schnell-Login
-        function quickLogin(userType) {
-            const user = users[userType];
-            showNotification(`✅ Angemeldet als ${user.name}`, 'success');
-            loginUser(user);
-        }
-
-        // Login-Form Handler
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Demo-Login prüfen
-            if ((email === 'admin@firma.de' && password === 'admin123') ||
-                (email === 'max@firma.de' && password === 'user123')) {
-                
-                const user = email.includes('admin') ? users.admin : users.user;
-                showNotification(`✅ Willkommen ${user.name}!`, 'success');
-                loginUser(user);
-            } else {
-                showNotification('❌ Ungültige Anmeldedaten!', 'error');
-            }
-        }
-
-        // Benutzer anmelden
-        function loginUser(user) {
-            currentUser = user;
-            
-            setTimeout(() => {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                document.getElementById('userInfo').textContent = `Angemeldet als: ${user.name} (${user.role})`;
-                
-                // Admin-Tab anzeigen
-                if (user.role === 'admin') {
-                    document.getElementById('adminTab').style.display = 'block';
-                }
-            }, 800);
-        }
-
-        // Abmelden
-        function logout() {
-            showNotification('👋 Abgemeldet', 'info');
-            setTimeout(() => {
-                document.getElementById('mainApp').style.display = 'none';
-                document.getElementById('loginScreen').style.display = 'block';
-                document.getElementById('adminTab').style.display = 'none';
-                document.getElementById('loginForm').reset();
-                currentUser = null;
-            }, 1000);
-        }
-
-        // Tab wechseln
-        function showTab(tabName) {
-            // Alle Tabs ausblenden
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Gewählten Tab anzeigen
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
-            
-            // Tickets laden wenn Tickets-Tab geöffnet wird
-            if (tabName === 'tickets') {
-                displayTickets();
-            }
-        }
-
-        // Teams testen
-        function testTeams() {
-            showNotification('📢 Teams-Test wird gestartet...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Teams-Integration erfolgreich getestet!', 'success');
-            }, 2000);
-        }
-
-        // Ticket erstellen
-        function createTicket(event) {
-            event.preventDefault();
-            
-            // Formulardaten sammeln
-            const ticketData = {
-                id: ticketCounter++,
-                kundenName: document.getElementById('kundenName').value.trim(),
-                firma: document.getElementById('firma').value.trim(),
-                telefon: document.getElementById('telefon').value.trim(),
-                kundenEmail: document.getElementById('kundenEmail').value.trim(),
-                zugewiesen: document.getElementById('zugewiesen').value,
-                gruppe: document.getElementById('gruppe').value,
-                prioritaet: document.getElementById('prioritaet').value,
-                stoerung: document.getElementById('stoerung').value.trim(),
-                kategorie: document.getElementById('kategorie').value,
-                status: 'Offen',
-                ersteller: currentUser ? currentUser.name : 'System',
-                erstelltAm: new Date().toLocaleString('de-DE'),
-                kommentare: []
-            };
-            
-            // Validierung
-            if (!ticketData.kundenName || !ticketData.firma || !ticketData.telefon || 
-                !ticketData.gruppe || !ticketData.stoerung) {
-                showNotification('❌ Bitte füllen Sie alle Pflichtfelder (*) aus!', 'error');
-                return;
-            }
-            
-            // Ticket speichern
-            tickets.push(ticketData);
-            console.log('Neues Ticket erstellt:', ticketData);
-            
-            // Erfolgs-Nachricht
-            showNotification(
-                `✅ Ticket #${ticketData.id} erfolgreich erstellt!\n` +
-                `Kunde: ${ticketData.kundenName}\n` +
-                `Ersteller: ${ticketData.ersteller}\n` +
-                `Priorität: ${ticketData.prioritaet}`, 
-                'success'
-            );
-            
-            // Automatischen Erstellungs-Kommentar hinzufügen
-            const erstellungsKommentar = {
-                author: ticketData.ersteller,
-                date: ticketData.erstelltAm,
-                text: `Ticket erstellt für ${ticketData.kundenName} (${ticketData.firma})`
-            };
-            ticketData.kommentare.push(erstellungsKommentar);
-            
-            // Wenn zugewiesen, Kommentar hinzufügen
-            if (ticketData.zugewiesen) {
-                const zuweisungsKommentar = {
-                    author: ticketData.ersteller,
-                    date: ticketData.erstelltAm,
-                    text: `Ticket zugewiesen an: ${ticketData.zugewiesen}`
-                };
-                ticketData.kommentare.push(zuweisungsKommentar);
-            }
-            
-            // Formular zurücksetzen
-            document.getElementById('ticketForm').reset();
-            
-            // Optional: Automatisch zu Dashboard wechseln
-            setTimeout(() => {
-                showTab('dashboard');
-                // Tab-Button auch visuell aktivieren
-                document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.nav-tab')[0].classList.add('active');
-            }, 2000);
-            
-            // Statistiken aktualisieren
-            updateStats();
-            
-            // Teams-Benachrichtigung senden (Simulation)
-            sendTeamsNotification(ticketData);
-        }
-
-        // Formular leeren
-        function clearTicketForm() {
-            if (confirm('Möchten Sie wirklich alle Eingaben löschen?')) {
-                document.getElementById('ticketForm').reset();
-                showNotification('🗑️ Formular wurde geleert', 'info');
-            }
-        }
-
-        // Statistiken aktualisieren
-        function updateStats() {
-            const offeneTickets = tickets.filter(t => t.status === 'Offen').length;
-            const inBearbeitung = tickets.filter(t => t.status === 'In Bearbeitung').length;
-            const geloeste = tickets.filter(t => t.status === 'Gelöst').length;
-            const erfolgsrate = tickets.length > 0 ? Math.round((geloeste / tickets.length) * 100) : 94;
-            
-            // Statistik-Karten aktualisieren
-            const statCards = document.querySelectorAll('.stat-number');
-            if (statCards.length >= 4) {
-                statCards[0].textContent = offeneTickets;
-                statCards[1].textContent = inBearbeitung;
-                statCards[2].textContent = geloeste;
-                statCards[3].textContent = erfolgsrate + '%';
-            }
-        }
-
-        // Teams-Benachrichtigung senden (Simulation)
-        function sendTeamsNotification(ticketData) {
-            console.log('Teams-Benachrichtigung für Ticket #' + ticketData.id);
-            
-            // Simuliere Teams-Nachricht
-            const teamsMessage = {
-                title: `🎫 Neues Ticket #${ticketData.id}`,
-                kunde: ticketData.kundenName,
-                firma: ticketData.firma,
-                prioritaet: ticketData.prioritaet,
-                gruppe: ticketData.gruppe,
-                problem: ticketData.stoerung.substring(0, 100) + '...'
-            };
-            
-            // In echter Version würde hier der Teams-Webhook aufgerufen
-            setTimeout(() => {
-                console.log('📢 Teams-Nachricht gesendet:', teamsMessage);
-            }, 1000);
-        }
-
-        // Tickets anzeigen
-        function displayTickets() {
-            const ticketsList = document.getElementById('ticketsList');
-            const noTickets = document.getElementById('noTickets');
-            const filter = document.getElementById('ticketFilter').value;
-            
-            // Tickets filtern
-            let filteredTickets = tickets;
-            if (filter !== 'all') {
-                filteredTickets = tickets.filter(ticket => ticket.status === filter);
-            }
-            
-            // Sortieren: Neueste zuerst
-            filteredTickets.sort((a, b) => b.id - a.id);
-            
-            if (filteredTickets.length === 0) {
-                ticketsList.style.display = 'none';
-                noTickets.style.display = 'block';
-                return;
-            }
-            
-            ticketsList.style.display = 'block';
-            noTickets.style.display = 'none';
-            
-            // Tickets HTML generieren
-            ticketsList.innerHTML = filteredTickets.map(ticket => `
-                <div class="ticket-card" onclick="openTicketDetail(${ticket.id})">
-                    <div class="ticket-header">
-                        <span class="ticket-id">#${ticket.id}</span>
-                        <span class="ticket-priority priority-${ticket.prioritaet.toLowerCase()}">
-                            ${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}
-                        </span>
-                    </div>
-                    
-                    <div class="ticket-customer">${ticket.kundenName}</div>
-                    <div class="ticket-company">🏢 ${ticket.firma} • 📞 ${ticket.telefon}</div>
-                    ${ticket.zugewiesen ? `<div class="assigned-user">👨‍💼 Zugewiesen: ${ticket.zugewiesen}</div>` : ''}
-                    
-                    <div class="ticket-description">
-                        ${ticket.stoerung}
-                    </div>
-                    
-                    <div class="ticket-meta">
-                        <div>
-                            <select class="status-dropdown status-${ticket.status.toLowerCase().replace(' ', '-')}" 
-                                    onchange="changeTicketStatusDirect(${ticket.id}, this.value)" 
-                                    onclick="event.stopPropagation()">
-                                <option value="Offen" ${ticket.status === 'Offen' ? 'selected' : ''}>🔴 Offen</option>
-                                <option value="In Bearbeitung" ${ticket.status === 'In Bearbeitung' ? 'selected' : ''}>🟡 In Bearbeitung</option>
-                                <option value="Gelöst" ${ticket.status === 'Gelöst' ? 'selected' : ''}>🟢 Gelöst</option>
-                            </select>
-                            • 🔧 ${ticket.gruppe}
-                        </div>
-                        <div>${ticket.erstelltAm}</div>
-                    </div>
-                    
-                    <div class="ticket-actions">
-                        <button class="action-menu-btn" onclick="event.stopPropagation(); editTicket(${ticket.id})">
-                            ✏️ Bearbeiten
-                        </button>
-                        <button class="action-menu-btn" onclick="event.stopPropagation(); deleteTicket(${ticket.id})">
-                            🗑️ Löschen
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Ticket-Details öffnen
-        function openTicketDetail(ticketId) {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (!ticket) return;
-            
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            const editBtn = document.getElementById('editTicketBtn');
-            
-            modalTitle.textContent = `🎫 Ticket #${ticket.id}`;
-            editBtn.onclick = () => startEditTicket(ticketId);
-            
-            modalBody.innerHTML = `
-                <div class="ticket-detail-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">👤 Kunde</div>
-                        <div class="detail-value">${ticket.kundenName}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">🏢 Firma</div>
-                        <div class="detail-value">${ticket.firma}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">📞 Telefon</div>
-                        <div class="detail-value">${ticket.telefon}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">📧 E-Mail</div>
-                        <div class="detail-value">${ticket.kundenEmail || 'Nicht angegeben'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">🔧 Gruppe</div>
-                        <div class="detail-value">${ticket.gruppe}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">🚨 Priorität</div>
-                        <div class="detail-value">${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">📊 Status</div>
-                        <div class="detail-value">${getStatusIcon(ticket.status)} ${ticket.status}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">📋 Kategorie</div>
-                        <div class="detail-value">${ticket.kategorie || 'Nicht angegeben'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">👨‍💼 Zugewiesen</div>
-                        <div class="detail-value">${ticket.zugewiesen || 'Nicht zugewiesen'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">⏰ Erstellt</div>
-                        <div class="detail-value">${ticket.erstelltAm}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">👨‍💼 Ersteller</div>
-                        <div class="detail-value">${ticket.ersteller}</div>
-                    </div>
-                </div>
-                
-                <div class="problem-description">
-                    <div class="detail-label">📝 Störungsbeschreibung</div>
-                    <div class="detail-value" style="white-space: pre-wrap; margin-top: 8px;">${ticket.stoerung}</div>
-                </div>
-                
-                <div class="comments-section">
-                    <h4 style="margin-bottom: 15px; color: #374151;">💬 Kommentare (${ticket.kommentare.length})</h4>
-                    
-                    <div id="commentsList">
-                        ${ticket.kommentare.map(comment => `
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <span class="comment-author">${comment.author}</span>
-                                    <span class="comment-date">${comment.date}</span>
-                                </div>
-                                <div class="comment-text">${comment.text}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    
-                    ${ticket.kommentare.length === 0 ? '<p style="text-align: center; color: #6b7280; padding: 20px;">Noch keine Kommentare vorhanden</p>' : ''}
-                    
-                    <div class="comment-form">
-                        <textarea class="comment-input" id="newComment" placeholder="Neuen Kommentar hinzufügen..."></textarea>
-                        <button class="btn btn-primary" onclick="addComment(${ticket.id})" style="margin-top: 10px; width: 100%;">
-                            💬 Kommentar hinzufügen
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('ticketModal').classList.add('show');
-        }
-
-        // Kommentar hinzufügen
-        function addComment(ticketId) {
-            const ticket = tickets.find(t => t.id === ticketId);
-            const commentText = document.getElementById('newComment').value.trim();
-            
-            if (!commentText) {
-                showNotification('❌ Bitte geben Sie einen Kommentar ein!', 'error');
-                return;
-            }
-            
-            const newComment = {
-                author: currentUser ? currentUser.name : 'System',
-                date: new Date().toLocaleString('de-DE'),
-                text: commentText
-            };
-            
-            ticket.kommentare.push(newComment);
-            
-            showNotification('✅ Kommentar hinzugefügt!', 'success');
-            
-            // Modal-Inhalt aktualisieren
-            openTicketDetail(ticketId);
-        }
-
-        // Modal schließen
-        function closeModal() {
-            document.getElementById('ticketModal').classList.remove('show');
-        }
-
-        // Ticket bearbeiten starten
-        function startEditTicket(ticketId) {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (!ticket) return;
-            
-            currentEditingTicket = ticket;
-            
-            // Formular mit aktuellen Werten füllen
-            document.getElementById('editKundenName').value = ticket.kundenName;
-            document.getElementById('editFirma').value = ticket.firma;
-            document.getElementById('editTelefon').value = ticket.telefon;
-            document.getElementById('editKundenEmail').value = ticket.kundenEmail || '';
-            document.getElementById('editGruppe').value = ticket.gruppe;
-            document.getElementById('editPriorität').value = ticket.prioritaet;
-            document.getElementById('editStatus').value = ticket.status;
-            document.getElementById('editStoerung').value = ticket.stoerung;
-            document.getElementById('editKategorie').value = ticket.kategorie || '';
-            document.getElementById('editZugewiesen').value = ticket.zugewiesen || '';
-            
-            // Detail-Modal schließen und Edit-Modal öffnen
-            closeModal();
-            document.getElementById('editModal').classList.add('show');
-        }
-
-        // Edit-Modal schließen
-        function closeEditModal() {
-            document.getElementById('editModal').classList.remove('show');
-            currentEditingTicket = null;
-        }
-
-        // Ticket-Änderungen speichern
-        function saveTicketChanges() {
-            if (!currentEditingTicket) return;
-            
-            // Neue Werte aus dem Formular holen
-            const updatedData = {
-                kundenName: document.getElementById('editKundenName').value.trim(),
-                firma: document.getElementById('editFirma').value.trim(),
-                telefon: document.getElementById('editTelefon').value.trim(),
-                kundenEmail: document.getElementById('editKundenEmail').value.trim(),
-                zugewiesen: document.getElementById('editZugewiesen').value,
-                gruppe: document.getElementById('editGruppe').value,
-                prioritaet: document.getElementById('editPriorität').value,
-                status: document.getElementById('editStatus').value,
-                stoerung: document.getElementById('editStoerung').value.trim(),
-                kategorie: document.getElementById('editKategorie').value
-            };
-            
-            // Validierung
-            if (!updatedData.kundenName || !updatedData.firma || !updatedData.telefon || 
-                !updatedData.gruppe || !updatedData.stoerung) {
-                showNotification('❌ Bitte füllen Sie alle Pflichtfelder aus!', 'error');
-                return;
-            }
-            
-            // Status-Änderung kommentieren
-            const oldStatus = currentEditingTicket.status;
-            const oldZugewiesen = currentEditingTicket.zugewiesen || 'Nicht zugewiesen';
-            
-            if (oldStatus !== updatedData.status) {
-                const statusComment = {
-                    author: currentUser ? currentUser.name : 'System',
-                    date: new Date().toLocaleString('de-DE'),
-                    text: `Status geändert: ${oldStatus} → ${updatedData.status}`
-                };
-                currentEditingTicket.kommentare.push(statusComment);
-            }
-            
-            // Zuweisung-Änderung kommentieren
-            if (oldZugewiesen !== (updatedData.zugewiesen || 'Nicht zugewiesen')) {
-                const zuweisungComment = {
-                    author: currentUser ? currentUser.name : 'System',
-                    date: new Date().toLocaleString('de-DE'),
-                    text: `Zuweisung geändert: ${oldZugewiesen} → ${updatedData.zugewiesen || 'Nicht zugewiesen'}`
-                };
-                currentEditingTicket.kommentare.push(zuweisungComment);
-            }
-            
-            // Ticket aktualisieren
-            Object.assign(currentEditingTicket, updatedData);
-            
-            showNotification(`✅ Ticket #${currentEditingTicket.id} erfolgreich aktualisiert!`, 'success');
-            
-            // Modals schließen und Listen aktualisieren
-            closeEditModal();
-            displayTickets();
-            updateStats();
-        }
-
-        // Ticket-Status ändern
-        function changeTicketStatus(ticketId) {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (!ticket) return;
-            
-            const newStatus = prompt(
-                `Neuer Status für Ticket #${ticketId}:\n\n` +
-                `1 = Offen\n` +
-                `2 = In Bearbeitung\n` +
-                `3 = Gelöst\n\n` +
-                `Aktuell: ${ticket.status}`,
-                ticket.status === 'Offen' ? '1' : ticket.status === 'In Bearbeitung' ? '2' : '3'
-            );
-            
-            const statusMap = {
-                '1': 'Offen',
-                '2': 'In Bearbeitung', 
-                '3': 'Gelöst'
-            };
-            
-            if (statusMap[newStatus]) {
-                ticket.status = statusMap[newStatus];
-                showNotification(`✅ Status von Ticket #${ticketId} geändert: ${ticket.status}`, 'success');
-                displayTickets();
-                updateStats();
-            }
-        }
-
-        // Ticket bearbeiten
-        function editTicket(ticketId) {
-            startEditTicket(ticketId);
-        }
-
-        // Ticket löschen
-        function deleteTicket(ticketId) {
-            if (confirm(`Ticket #${ticketId} wirklich löschen?`)) {
-                tickets = tickets.filter(t => t.id !== ticketId);
-                showNotification(`🗑️ Ticket #${ticketId} gelöscht`, 'success');
-                displayTickets();
-                updateStats();
-            }
-        }
-
-        // Tickets filtern
-        function filterTickets() {
-            displayTickets();
-        }
-
-        // Priority Icon
-        function getPriorityIcon(priority) {
-            const icons = {
-                'Niedrig': '🟢',
-                'Normal': '🔵', 
-                'Hoch': '🟡',
-                'Kritisch': '🔴'
-            };
-            return icons[priority] || '🔵';
-        }
-
-        // Status Icon  
-        function getStatusIcon(status) {
-            const icons = {
-                'Offen': '🔴',
-                'In Bearbeitung': '🟡',
-                'Gelöst': '🟢'
-            };
-            return icons[status] || '🔴';
-        }
-
-        // Benachrichtigungen
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 100);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Modal außerhalb schließen
-        window.onclick = function(event) {
-            const ticketModal = document.getElementById('ticketModal');
-            const editModal = document.getElementById('editModal');
-            
-            if (event.target === ticketModal) {
-                closeModal();
-            }
-            if (event.target === editModal) {
-                closeEditModal();
-            }
-        }
-
-        // Escape-Taste zum Schließen
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-                closeEditModal();
-            }
-        });
-
-        console.log('📱 Ultra-einfache Mobile Version geladen');
-    </script>
-</body>
-</html>
+            <div id="noTickets" class="no-tickets"

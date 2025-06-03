@@ -514,6 +514,43 @@
             color: #374151;
         }
         
+        .status-dropdown {
+            padding: 4px 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 11px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .status-dropdown:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .status-dropdown.status-offen { 
+            background: #fee2e2; 
+            color: #dc2626; 
+            border-color: #fca5a5;
+        }
+        .status-dropdown.status-in-bearbeitung { 
+            background: #fef3c7; 
+            color: #d97706; 
+            border-color: #fcd34d;
+        }
+        .status-dropdown.status-gelöst { 
+            background: #dcfce7; 
+            color: #16a34a; 
+            border-color: #86efac;
+        }
+        
+        .assigned-user {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
         /* Modal Styles */
         .modal {
             display: none;
@@ -839,6 +876,17 @@
                 </div>
                 
                 <div class="form-group">
+                    <label class="form-label">👨‍💼 Zugewiesen an</label>
+                    <select class="form-input" id="zugewiesen">
+                        <option value="">Nicht zugewiesen</option>
+                        <option value="Administrator">👑 Administrator</option>
+                        <option value="Max Schmidt">👤 Max Schmidt</option>
+                        <option value="Anna Weber">👩‍💻 Anna Weber</option>
+                        <option value="Thomas Müller">🧑‍🔧 Thomas Müller</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
                     <label class="form-label">🔧 Gruppe *</label>
                     <select class="form-input" id="gruppe" required>
                         <option value="">Bitte wählen...</option>
@@ -1005,6 +1053,17 @@
                     </div>
                     
                     <div class="form-group">
+                        <label class="form-label">👨‍💼 Zugewiesen an</label>
+                        <select class="form-input" id="editZugewiesen">
+                            <option value="">Nicht zugewiesen</option>
+                            <option value="Administrator">👑 Administrator</option>
+                            <option value="Max Schmidt">👤 Max Schmidt</option>
+                            <option value="Anna Weber">👩‍💻 Anna Weber</option>
+                            <option value="Thomas Müller">🧑‍🔧 Thomas Müller</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="form-label">📊 Status *</label>
                         <select class="form-input" id="editStatus" required>
                             <option value="Offen">🔴 Offen</option>
@@ -1146,6 +1205,7 @@
                 firma: document.getElementById('firma').value.trim(),
                 telefon: document.getElementById('telefon').value.trim(),
                 kundenEmail: document.getElementById('kundenEmail').value.trim(),
+                zugewiesen: document.getElementById('zugewiesen').value,
                 gruppe: document.getElementById('gruppe').value,
                 prioritaet: document.getElementById('prioritaet').value,
                 stoerung: document.getElementById('stoerung').value.trim(),
@@ -1153,7 +1213,6 @@
                 status: 'Offen',
                 ersteller: currentUser ? currentUser.name : 'System',
                 erstelltAm: new Date().toLocaleString('de-DE'),
-                zugewiesen: '',
                 kommentare: []
             };
             
@@ -1172,9 +1231,28 @@
             showNotification(
                 `✅ Ticket #${ticketData.id} erfolgreich erstellt!\n` +
                 `Kunde: ${ticketData.kundenName}\n` +
+                `Ersteller: ${ticketData.ersteller}\n` +
                 `Priorität: ${ticketData.prioritaet}`, 
                 'success'
             );
+            
+            // Automatischen Erstellungs-Kommentar hinzufügen
+            const erstellungsKommentar = {
+                author: ticketData.ersteller,
+                date: ticketData.erstelltAm,
+                text: `Ticket erstellt für ${ticketData.kundenName} (${ticketData.firma})`
+            };
+            ticketData.kommentare.push(erstellungsKommentar);
+            
+            // Wenn zugewiesen, Kommentar hinzufügen
+            if (ticketData.zugewiesen) {
+                const zuweisungsKommentar = {
+                    author: ticketData.ersteller,
+                    date: ticketData.erstelltAm,
+                    text: `Ticket zugewiesen an: ${ticketData.zugewiesen}`
+                };
+                ticketData.kommentare.push(zuweisungsKommentar);
+            }
             
             // Formular zurücksetzen
             document.getElementById('ticketForm').reset();
@@ -1275,6 +1353,7 @@
                     
                     <div class="ticket-customer">${ticket.kundenName}</div>
                     <div class="ticket-company">🏢 ${ticket.firma} • 📞 ${ticket.telefon}</div>
+                    ${ticket.zugewiesen ? `<div class="assigned-user">👨‍💼 Zugewiesen: ${ticket.zugewiesen}</div>` : ''}
                     
                     <div class="ticket-description">
                         ${ticket.stoerung}
@@ -1282,18 +1361,19 @@
                     
                     <div class="ticket-meta">
                         <div>
-                            <span class="ticket-status status-${ticket.status.toLowerCase().replace(' ', '-')}">
-                                ${getStatusIcon(ticket.status)} ${ticket.status}
-                            </span>
+                            <select class="status-dropdown status-${ticket.status.toLowerCase().replace(' ', '-')}" 
+                                    onchange="changeTicketStatusDirect(${ticket.id}, this.value)" 
+                                    onclick="event.stopPropagation()">
+                                <option value="Offen" ${ticket.status === 'Offen' ? 'selected' : ''}>🔴 Offen</option>
+                                <option value="In Bearbeitung" ${ticket.status === 'In Bearbeitung' ? 'selected' : ''}>🟡 In Bearbeitung</option>
+                                <option value="Gelöst" ${ticket.status === 'Gelöst' ? 'selected' : ''}>🟢 Gelöst</option>
+                            </select>
                             • 🔧 ${ticket.gruppe}
                         </div>
                         <div>${ticket.erstelltAm}</div>
                     </div>
                     
                     <div class="ticket-actions">
-                        <button class="action-menu-btn" onclick="event.stopPropagation(); changeTicketStatus(${ticket.id})">
-                            🔄 Status ändern
-                        </button>
                         <button class="action-menu-btn" onclick="event.stopPropagation(); editTicket(${ticket.id})">
                             ✏️ Bearbeiten
                         </button>
@@ -1350,6 +1430,10 @@
                     <div class="detail-item">
                         <div class="detail-label">📋 Kategorie</div>
                         <div class="detail-value">${ticket.kategorie || 'Nicht angegeben'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">👨‍💼 Zugewiesen</div>
+                        <div class="detail-value">${ticket.zugewiesen || 'Nicht zugewiesen'}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">⏰ Erstellt</div>
@@ -1441,6 +1525,7 @@
             document.getElementById('editStatus').value = ticket.status;
             document.getElementById('editStoerung').value = ticket.stoerung;
             document.getElementById('editKategorie').value = ticket.kategorie || '';
+            document.getElementById('editZugewiesen').value = ticket.zugewiesen || '';
             
             // Detail-Modal schließen und Edit-Modal öffnen
             closeModal();
@@ -1463,6 +1548,7 @@
                 firma: document.getElementById('editFirma').value.trim(),
                 telefon: document.getElementById('editTelefon').value.trim(),
                 kundenEmail: document.getElementById('editKundenEmail').value.trim(),
+                zugewiesen: document.getElementById('editZugewiesen').value,
                 gruppe: document.getElementById('editGruppe').value,
                 prioritaet: document.getElementById('editPriorität').value,
                 status: document.getElementById('editStatus').value,
@@ -1479,6 +1565,8 @@
             
             // Status-Änderung kommentieren
             const oldStatus = currentEditingTicket.status;
+            const oldZugewiesen = currentEditingTicket.zugewiesen || 'Nicht zugewiesen';
+            
             if (oldStatus !== updatedData.status) {
                 const statusComment = {
                     author: currentUser ? currentUser.name : 'System',
@@ -1486,6 +1574,16 @@
                     text: `Status geändert: ${oldStatus} → ${updatedData.status}`
                 };
                 currentEditingTicket.kommentare.push(statusComment);
+            }
+            
+            // Zuweisung-Änderung kommentieren
+            if (oldZugewiesen !== (updatedData.zugewiesen || 'Nicht zugewiesen')) {
+                const zuweisungComment = {
+                    author: currentUser ? currentUser.name : 'System',
+                    date: new Date().toLocaleString('de-DE'),
+                    text: `Zuweisung geändert: ${oldZugewiesen} → ${updatedData.zugewiesen || 'Nicht zugewiesen'}`
+                };
+                currentEditingTicket.kommentare.push(zuweisungComment);
             }
             
             // Ticket aktualisieren

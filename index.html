@@ -73,6 +73,18 @@
                 margin: 0 auto 20px auto;
                 display: block;
             }
+            
+            .tickets-list {
+                max-height: 500px;
+            }
+            
+            .ticket-card {
+                padding: 25px;
+            }
+            
+            .ticket-description {
+                max-height: 60px;
+            }
         }
 
         @media (min-width: 1024px) {
@@ -378,6 +390,129 @@
         .notification.error {
             background: #ef4444;
         }
+        
+        /* Ticket List Styles */
+        .tickets-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .ticket-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .ticket-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .ticket-id {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .ticket-priority {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority-niedrig { background: #dcfce7; color: #16a34a; }
+        .priority-normal { background: #dbeafe; color: #2563eb; }
+        .priority-hoch { background: #fef3c7; color: #d97706; }
+        .priority-kritisch { background: #fee2e2; color: #dc2626; }
+        
+        .ticket-customer {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .ticket-company {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .ticket-description {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            max-height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .ticket-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #9ca3af;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 8px;
+        }
+        
+        .ticket-status {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .status-offen { background: #fee2e2; color: #dc2626; }
+        .status-in-bearbeitung { background: #fef3c7; color: #d97706; }
+        .status-gelöst { background: #dcfce7; color: #16a34a; }
+        
+        .ticket-actions {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .ticket-card:hover .ticket-actions {
+            display: block;
+        }
+        
+        .action-menu-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6b7280;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .action-menu-btn:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
     </style>
 </head>
 <body>
@@ -545,11 +680,27 @@
         
         <!-- Tickets Tab -->
         <div id="tickets-tab" class="tab-content">
-            <h3>📋 Meine Tickets</h3>
-            <p style="text-align: center; padding: 40px; color: #6c757d;">
-                <strong>🚧 Wird implementiert...</strong><br>
-                Ticket-Verwaltung wird in der nächsten Version verfügbar sein.
-            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>📋 Meine Tickets</h3>
+                <select id="ticketFilter" class="form-input" style="width: auto; padding: 8px 12px;" onchange="filterTickets()">
+                    <option value="all">Alle Tickets</option>
+                    <option value="Offen">🔴 Offen</option>
+                    <option value="In Bearbeitung">🟡 In Bearbeitung</option>
+                    <option value="Gelöst">🟢 Gelöst</option>
+                </select>
+            </div>
+            
+            <div id="ticketsList" class="tickets-list">
+                <!-- Tickets werden hier dynamisch eingefügt -->
+            </div>
+            
+            <div id="noTickets" class="no-tickets" style="display: none;">
+                <div style="text-align: center; padding: 40px; color: #6c757d;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
+                    <strong>Keine Tickets vorhanden</strong><br>
+                    <small>Erstellen Sie Ihr erstes Ticket über den "Neu" Tab</small>
+                </div>
+            </div>
         </div>
         
         <!-- Admin Tab -->
@@ -645,6 +796,11 @@
             // Gewählten Tab anzeigen
             document.getElementById(tabName + '-tab').classList.add('active');
             event.target.classList.add('active');
+            
+            // Tickets laden wenn Tickets-Tab geöffnet wird
+            if (tabName === 'tickets') {
+                displayTickets();
+            }
         }
 
         // Teams testen
@@ -724,58 +880,4 @@
 
         // Statistiken aktualisieren
         function updateStats() {
-            const offeneTickets = tickets.filter(t => t.status === 'Offen').length;
-            const inBearbeitung = tickets.filter(t => t.status === 'In Bearbeitung').length;
-            const geloeste = tickets.filter(t => t.status === 'Gelöst').length;
-            const erfolgsrate = tickets.length > 0 ? Math.round((geloeste / tickets.length) * 100) : 94;
-            
-            // Statistik-Karten aktualisieren
-            const statCards = document.querySelectorAll('.stat-number');
-            if (statCards.length >= 4) {
-                statCards[0].textContent = offeneTickets;
-                statCards[1].textContent = inBearbeitung;
-                statCards[2].textContent = geloeste;
-                statCards[3].textContent = erfolgsrate + '%';
-            }
-        }
-
-        // Teams-Benachrichtigung senden (Simulation)
-        function sendTeamsNotification(ticketData) {
-            console.log('Teams-Benachrichtigung für Ticket #' + ticketData.id);
-            
-            // Simuliere Teams-Nachricht
-            const teamsMessage = {
-                title: `🎫 Neues Ticket #${ticketData.id}`,
-                kunde: ticketData.kundenName,
-                firma: ticketData.firma,
-                prioritaet: ticketData.prioritaet,
-                gruppe: ticketData.gruppe,
-                problem: ticketData.stoerung.substring(0, 100) + '...'
-            };
-            
-            // In echter Version würde hier der Teams-Webhook aufgerufen
-            setTimeout(() => {
-                console.log('📢 Teams-Nachricht gesendet:', teamsMessage);
-            }, 1000);
-        }
-
-        // Benachrichtigungen
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 100);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        console.log('📱 Ultra-einfache Mobile Version geladen');
-    </script>
-</body>
-</html>
+            const offeneTickets = tickets.filter(t => t.status === 'Offen').

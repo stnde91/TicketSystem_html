@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket System Pro - Prototyp</title>
-    <meta name="description" content="Ticket System Prototyp mit einfacher Authentifizierung">
+    <title>Ticket System Pro - Mobile</title>
+    <meta name="description" content="Ticket System Prototyp - Mobile optimiert">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
@@ -33,40 +33,9 @@
             flex-direction: column;
         }
 
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            color: white;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Simple Login Screen */
+        /* Simple Login Screen - DIREKT SICHTBAR */
         .login-screen {
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
@@ -92,61 +61,58 @@
         .login-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px 30px;
+            padding: 30px 20px;
             text-align: center;
         }
 
         .login-logo {
-            font-size: 48px;
+            font-size: 40px;
             margin-bottom: 15px;
         }
 
         .login-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 8px;
         }
 
         .login-subtitle {
-            font-size: 16px;
+            font-size: 14px;
             opacity: 0.9;
         }
 
         .login-form {
-            padding: 40px 30px;
+            padding: 30px 20px;
         }
 
-        .prototype-info {
+        .mobile-info {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
             border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            padding: 15px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
-        .prototype-info h3 {
+        .mobile-info h3 {
             color: #059669;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 16px;
         }
 
-        .prototype-info p {
+        .mobile-info p {
             color: #047857;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.4;
         }
 
         .demo-credentials {
             background: #f0f9ff;
             border: 1px solid #0ea5e9;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px;
             margin: 15px 0;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .demo-credentials strong {
@@ -162,21 +128,25 @@
 
         .demo-user {
             background: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid rgba(3, 105, 161, 0.2);
+            text-align: center;
+            font-weight: 500;
         }
 
-        .demo-user:hover {
+        .demo-user:hover,
+        .demo-user:active {
             background: #f0f9ff;
             border-color: #0ea5e9;
+            transform: scale(0.98);
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .form-label {
@@ -187,8 +157,7 @@
             font-size: 14px;
         }
 
-        .form-input,
-        .form-select {
+        .form-input {
             width: 100%;
             padding: 16px 20px;
             border: 2px solid #e5e7eb;
@@ -196,14 +165,13 @@
             font-size: 16px;
             transition: all 0.3s ease;
             background: white;
+            -webkit-appearance: none;
         }
 
-        .form-input:focus,
-        .form-select:focus {
+        .form-input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
         }
 
         .btn {
@@ -216,6 +184,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 15px;
+            -webkit-appearance: none;
         }
 
         .btn-primary {
@@ -224,24 +193,18 @@
             box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
         .btn-guest {
             background: transparent;
             color: #6c757d;
             border: 2px solid #e2e8f0;
-            padding: 12px 18px;
+            padding: 16px 18px;
         }
 
-        .btn-guest:hover {
+        .btn-guest:active {
             border-color: #667eea;
             color: #667eea;
         }
@@ -268,30 +231,29 @@
 
         .header-content {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
             align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: 14px;
+            gap: 12px;
+            font-size: 13px;
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: linear-gradient(45deg, #4CAF50, #45a049);
             display: flex;
@@ -300,32 +262,28 @@
             font-weight: bold;
             font-size: 14px;
             color: white;
-            border: 2px solid rgba(255,255,255,0.3);
         }
 
         .user-role {
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
         }
 
         .logout-btn {
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             transition: all 0.2s;
         }
 
-        .logout-btn:hover {
+        .logout-btn:active {
             background: rgba(255,255,255,0.2);
         }
 
@@ -338,17 +296,15 @@
 
         .nav-tabs {
             display: flex;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 16px;
         }
 
         .nav-tab {
-            padding: 16px 24px;
+            padding: 12px 16px;
             cursor: pointer;
             border: none;
             background: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: #64748b;
             transition: all 0.3s ease;
@@ -356,11 +312,10 @@
             position: relative;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .nav-tab:hover {
-            color: #334155;
+        .nav-tab:active {
             background: rgba(102, 126, 234, 0.05);
         }
 
@@ -386,38 +341,28 @@
         /* Content */
         .content {
             flex: 1;
-            padding: 24px 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
+            padding: 16px;
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.4s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         /* Cards */
         .card {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
             overflow: hidden;
-            border: 1px solid #f1f5f9;
         }
 
         .card-header {
-            padding: 24px;
+            padding: 16px;
             border-bottom: 1px solid #f1f5f9;
             display: flex;
             justify-content: space-between;
@@ -425,40 +370,31 @@
         }
 
         .card-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 600;
             color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .card-body {
-            padding: 24px;
+            padding: 16px;
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: white;
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             position: relative;
             overflow: hidden;
-            border: 1px solid #f1f5f9;
-            transition: transform 0.2s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
         }
 
         .stat-card::before {
@@ -467,79 +403,106 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: linear-gradient(90deg, #667eea, #764ba2);
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #1e293b;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .stat-label {
             color: #64748b;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         /* Quick Actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .quick-action {
             background: white;
             border: 2px solid #f1f5f9;
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
         }
 
-        .quick-action:hover {
+        .quick-action:active {
             border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.1);
+            transform: scale(0.98);
         }
 
         .quick-action-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
         }
 
         .quick-action-title {
             font-weight: 600;
             margin-bottom: 4px;
             color: #1e293b;
+            font-size: 14px;
         }
 
         .quick-action-desc {
-            font-size: 14px;
+            font-size: 12px;
             color: #64748b;
         }
 
-        /* Form Styles */
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Form Mobile Optimizations */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .form-label {
@@ -548,18 +511,17 @@
             font-size: 14px;
         }
 
-        .form-input,
         .form-select,
         .form-textarea {
             padding: 14px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 16px;
             transition: all 0.2s ease;
             background: white;
+            -webkit-appearance: none;
         }
 
-        .form-input:focus,
         .form-select:focus,
         .form-textarea:focus {
             outline: none;
@@ -568,21 +530,21 @@
         }
 
         .form-textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
             font-family: inherit;
         }
 
         .btn-group {
             display: flex;
+            flex-direction: column;
             gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 24px;
+            margin-top: 16px;
         }
 
         .btn-sm {
-            width: auto;
-            padding: 12px 24px;
+            width: 100%;
+            padding: 12px 20px;
             font-size: 14px;
             border-radius: 10px;
         }
@@ -597,127 +559,56 @@
             color: white;
         }
 
-        /* Notifications */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            max-width: 350px;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
-        }
-
-        .notification.info {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .content {
-                padding: 16px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-tabs {
-                padding: 0 16px;
-            }
-
-            .nav-tab {
-                padding: 12px 16px;
-                font-size: 13px;
-            }
-        }
-
+        /* Mobile Specific */
         @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-
             .login-card {
                 margin: 10px;
+                border-radius: 16px;
             }
 
             .login-header {
-                padding: 30px 20px;
+                padding: 25px 15px;
             }
 
             .login-form {
-                padding: 30px 20px;
+                padding: 25px 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <h2>Ticket System wird geladen...</h2>
-        <p>Prototyp-Version wird initialisiert...</p>
-        <p style="margin-top: 20px; opacity: 0.8; font-size: 14px;">Zum Fortfahren klicken oder warten...</p>
-    </div>
-
+    <!-- KEIN LOADING SCREEN - DIREKT ZUM LOGIN -->
+    
     <!-- Simple Login Screen -->
     <div class="login-screen" id="loginScreen">
         <div class="login-card">
             <div class="login-header">
                 <div class="login-logo">🎫</div>
                 <h1 class="login-title">Ticket System Pro</h1>
-                <p class="login-subtitle">Prototyp-Version für Tests</p>
+                <p class="login-subtitle">Mobile Prototyp</p>
             </div>
 
             <div class="login-form">
-                <div class="prototype-info">
-                    <h3>🚀 Prototyp-Modus</h3>
-                    <p>Vereinfachte Anmeldung für Tests und Demonstrationen. Später kann auf Microsoft Integration umgestellt werden.</p>
-                    
-                    <div class="demo-credentials">
-                        <strong>Demo-Benutzer (zum Testen):</strong>
-                        <div class="demo-users">
-                            <div class="demo-user" onclick="fillDemoUser('admin')">
-                                👑 Admin: admin@firma.de / admin123
-                            </div>
-                            <div class="demo-user" onclick="fillDemoUser('user')">
-                                👤 Mitarbeiter: max.schmidt@firma.de / user123
-                            </div>
-                            <div class="demo-user" onclick="fillDemoUser('support')">
-                                🛠️ Support: anna.weber@firma.de / support123
-                            </div>
+                <div class="mobile-info">
+                    <h3>📱 Mobile-optimiert</h3>
+                    <p>Einfache Demo-Anmeldung für Tests. Klicken Sie auf einen Demo-Benutzer unten.</p>
+                </div>
+                
+                <div class="demo-credentials">
+                    <strong>Zum Testen:</strong>
+                    <div class="demo-users">
+                        <div class="demo-user" onclick="quickLogin('admin')">
+                            👑 Admin-Zugang
+                        </div>
+                        <div class="demo-user" onclick="quickLogin('user')">
+                            👤 Mitarbeiter-Zugang
+                        </div>
+                        <div class="demo-user" onclick="quickLogin('guest')">
+                            👁️ Gast-Zugang (nur ansehen)
                         </div>
                     </div>
                 </div>
@@ -725,20 +616,16 @@
                 <form id="loginForm">
                     <div class="form-group">
                         <label class="form-label">📧 E-Mail</label>
-                        <input type="email" class="form-input" id="email" placeholder="ihre.email@firma.de" required>
+                        <input type="email" class="form-input" id="email" placeholder="ihre.email@firma.de">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">🔒 Passwort</label>
-                        <input type="password" class="form-input" id="password" placeholder="Ihr Passwort" required>
+                        <input type="password" class="form-input" id="password" placeholder="Ihr Passwort">
                     </div>
 
-                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <button type="submit" class="btn btn-primary">
                         🚀 Anmelden
-                    </button>
-
-                    <button type="button" class="btn btn-guest" onclick="guestLogin()">
-                        👁️ Als Gast testen (nur ansehen)
                     </button>
                 </form>
             </div>
@@ -759,8 +646,8 @@
                     </div>
                     <div class="user-avatar" id="userAvatar">U</div>
                     <div>
-                        <div style="font-weight: 600;" id="userName">Benutzer</div>
-                        <div style="font-size: 12px; opacity: 0.8;" id="userEmail">email@firma.de</div>
+                        <div style="font-weight: 600; font-size: 13px;" id="userName">Benutzer</div>
+                        <div style="font-size: 11px; opacity: 0.8;" id="userEmail">email@firma.de</div>
                     </div>
                     <button class="logout-btn" onclick="logout()">Abmelden</button>
                 </div>
@@ -771,19 +658,16 @@
         <div class="nav-container">
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="showTab('dashboard')">
-                    📊 Dashboard
+                    📊 Start
                 </button>
                 <button class="nav-tab" onclick="showTab('create')">
-                    ➕ Neues Ticket
+                    ➕ Neu
                 </button>
                 <button class="nav-tab" onclick="showTab('manage')">
-                    📋 Tickets verwalten
-                </button>
-                <button class="nav-tab" onclick="showTab('profile')">
-                    👤 Mein Profil
+                    📋 Tickets
                 </button>
                 <button class="nav-tab admin-only" id="adminTab" onclick="showTab('admin')">
-                    ⚙️ Administration
+                    ⚙️ Admin
                 </button>
             </div>
         </div>
@@ -794,28 +678,28 @@
             <div id="dashboard-tab" class="tab-content active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-number" id="openTickets">12</div>
+                        <div class="stat-number">12</div>
                         <div class="stat-label">Offene Tickets</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" id="inProgressTickets">5</div>
+                        <div class="stat-number">5</div>
                         <div class="stat-label">In Bearbeitung</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" id="resolvedTickets">89</div>
+                        <div class="stat-number">89</div>
                         <div class="stat-label">Gelöste Tickets</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">🚀</div>
-                        <div class="stat-label">Prototyp aktiv</div>
+                        <div class="stat-number">📱</div>
+                        <div class="stat-label">Mobile Version</div>
                     </div>
                 </div>
 
                 <div class="quick-actions">
                     <div class="quick-action" onclick="showTab('create')">
                         <div class="quick-action-icon">➕</div>
-                        <div class="quick-action-title">Neues Ticket</div>
-                        <div class="quick-action-desc">Schnell ein Problem melden</div>
+                        <div class="quick-action-title">Neues Ticket erstellen</div>
+                        <div class="quick-action-desc">Problem schnell melden</div>
                     </div>
                     <div class="quick-action" onclick="showTab('manage')">
                         <div class="quick-action-icon">📋</div>
@@ -824,43 +708,33 @@
                     </div>
                     <div class="quick-action" onclick="testTeamsIntegration()">
                         <div class="quick-action-icon">📢</div>
-                        <div class="quick-action-title">Teams testen</div>
+                        <div class="quick-action-title">Teams-Benachrichtigung testen</div>
                         <div class="quick-action-desc">Teams-Integration ausprobieren</div>
-                    </div>
-                    <div class="quick-action admin-only" onclick="showTab('admin')">
-                        <div class="quick-action-icon">⚙️</div>
-                        <div class="quick-action-title">Administration</div>
-                        <div class="quick-action-desc">System verwalten</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">🎉 Prototyp erfolgreich gestartet!</h2>
-                        <div class="user-role">
-                            ✅ Einsatzbereit
-                        </div>
+                        <h2 class="card-title">📱 Mobile Prototyp</h2>
                     </div>
                     <div class="card-body">
-                        <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-                            <h4 style="color: #15803d; margin-bottom: 8px;">✅ Aktive Prototyp-Features:</h4>
-                            <ul style="color: #15803d; padding-left: 20px;">
-                                <li>✅ Einfache E-Mail/Passwort Anmeldung</li>
-                                <li>✅ Benutzer-Rollen (Admin, User, Support)</li>
-                                <li>✅ Session-Management</li>
-                                <li>✅ Demo-Benutzer für Tests</li>
-                                <li>✅ Teams-Integration vorbereitet</li>
+                        <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                            <h4 style="color: #15803d; margin-bottom: 6px; font-size: 14px;">✅ Mobile Features:</h4>
+                            <ul style="color: #15803d; padding-left: 16px; font-size: 13px;">
+                                <li>Touch-optimierte Bedienung</li>
+                                <li>Responsive Design</li>
+                                <li>Schnelle Demo-Anmeldung</li>
+                                <li>Offline-fähig (PWA)</li>
                             </ul>
                         </div>
 
-                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px;">
-                            <h4 style="color: #92400e; margin-bottom: 8px;">🔄 Upgrade-Pfad:</h4>
-                            <ul style="color: #92400e; padding-left: 20px;">
-                                <li>📧 E-Mail-Domain Whitelist hinzufügen</li>
-                                <li>🔐 Microsoft Azure AD Integration</li>
-                                <li>🗄️ Echte Datenbank anbinden</li>
-                                <li>📢 Teams Webhooks konfigurieren</li>
-                                <li>🏢 Unternehmens-spezifische Anpassungen</li>
+                        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 12px;">
+                            <h4 style="color: #0369a1; margin-bottom: 6px; font-size: 14px;">📋 Nächste Schritte:</h4>
+                            <ul style="color: #0369a1; padding-left: 16px; font-size: 13px;">
+                                <li>Teams Webhooks konfigurieren</li>
+                                <li>Echte Datenbank anbinden</li>
+                                <li>Push-Benachrichtigungen</li>
+                                <li>Offline-Synchronisation</li>
                             </ul>
                         </div>
                     </div>
@@ -871,27 +745,141 @@
             <div id="create-tab" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">➕ Neues Ticket erstellen</h2>
-                        <div class="user-role">
-                            📝 Prototyp
-                        </div>
+                        <h2 class="card-title">➕ Neues Ticket</h2>
                     </div>
                     <div class="card-body">
                         <form id="ticketForm">
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Kundenname *</label>
-                                    <input type="text" class="form-input" id="kundenName" placeholder="Max Mustermann" required>
+                                    <input type="text" class="form-input" placeholder="Max Mustermann" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Firma *</label>
-                                    <input type="text" class="form-input" id="firma" placeholder="Mustermann GmbH" required>
+                                    <input type="text" class="form-input" placeholder="Mustermann GmbH" required>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label">Telefonnummer *</label>
-                                    <input type="tel" class="form-input" id="telefon" placeholder="0203 123456" required>
+                                    <label class="form-label">Telefon *</label>
+                                    <input type="tel" class="form-input" placeholder="0203 123456" required>
                                 </div>
                                 
                                 <div class="form-group">
+                                    <label class="form-label">Gruppe *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Wählen Sie...</option>
+                                        <option value="Software">Software</option>
+                                        <option value="Technik">Technik</option>
+                                        <option value="Büro">Büro</option>
+                                        <option value="Hardware">Hardware</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Priorität *</label>
+                                    <select class="form-select" required>
+                                        <option value="Normal" selected>Normal</option>
+                                        <option value="Hoch">Hoch</option>
+                                        <option value="Kritisch">Kritisch</option>
+                                        <option value="Niedrig">Niedrig</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Störungsbeschreibung *</label>
+                                <textarea class="form-textarea" placeholder="Beschreibung des Problems..." required></textarea>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    ✓ Ticket erstellen
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="clearTicketForm()">
+                                    🗑️ Leeren
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Tickets Tab -->
+            <div id="manage-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 Tickets</h2>
+                    </div>
+                    <div class="card-body">
+                        <div style="text-align: center; padding: 30px; color: #6c757d;">
+                            <h3>🚧 Ticket-Verwaltung</h3>
+                            <p style="margin-top: 8px; font-size: 14px;">Wird für Mobile-Version implementiert...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tab -->
+            <div id="admin-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">⚙️ Administration</h2>
+                    </div>
+                    <div class="card-body">
+                        <div style="text-align: center; padding: 30px; color: #6c757d;">
+                            <h3>👑 Admin-Panel</h3>
+                            <p style="margin-top: 8px; font-size: 14px;">Erweiterte Einstellungen werden implementiert...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================
+        // MOBILE-OPTIMIERTES JAVASCRIPT
+        // ====================================
+
+        // Demo-Benutzer Daten
+        const demoUsers = {
+            admin: { name: 'Administrator', email: 'admin@firma.de', role: 'admin' },
+            user: { name: 'Max Schmidt', email: 'max@firma.de', role: 'user' },
+            guest: { name: 'Gast-Benutzer', email: 'gast@demo.de', role: 'guest' }
+        };
+
+        // Schnell-Anmeldung
+        function quickLogin(userType) {
+            const user = demoUsers[userType];
+            if (user) {
+                showNotification(`✅ Angemeldet als ${user.name}`, 'success');
+                loginUser(user);
+            }
+        }
+
+        // Benutzer anmelden
+        function loginUser(user) {
+            // UI umschalten
+            setTimeout(() => {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').classList.add('active');
+                
+                // Benutzer-Interface aktualisieren
+                updateUserInterface(user);
+            }, 800);
+        }
+
+        // Benutzer-Interface aktualisieren
+        function updateUserInterface(user) {
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+            
+            // Rolle anzeigen
+            const roleText = {
+                'admin': '👑 Admin',
+                'user': '👤 User', 
+                'guest': '👁️ Gast'
+            };
+            document.getElementById('userRole').textContent = role

@@ -673,7 +673,208 @@
             const oldStatus = currentEditingTicket.status;
             const oldZugewiesen = currentEditingTicket.zugewiesen || 'Nicht zugewiesen';
             
-            if (oldStatus !== updatedData.status)<!DOCTYPE html>
+            if (oldStatus !== updatedData.status) {
+                const statusComment = {
+                    author: currentUser ? currentUser.name : 'System',
+                    date: new Date().toLocaleString('de-DE'),
+                    text: `Status geändert: ${oldStatus} → ${updatedData.status}`
+                };
+                currentEditingTicket.kommentare.push(statusComment);
+            }
+            
+            // Zuweisung-Änderung kommentieren
+            if (oldZugewiesen !== (updatedData.zugewiesen || 'Nicht zugewiesen')) {
+                const zuweisungComment = {
+                    author: currentUser ? currentUser.name : 'System',
+                    date: new Date().toLocaleString('de-DE'),
+                    text: `Zuweisung geändert: ${oldZugewiesen} → ${updatedData.zugewiesen || 'Nicht zugewiesen'}`
+                };
+                currentEditingTicket.kommentare.push(zuweisungComment);
+            }
+            
+            // Ticket aktualisieren
+            Object.assign(currentEditingTicket, updatedData);
+            
+            saveTicketsToStorage(); // Änderungen speichern!
+            
+            showNotification(`✅ Ticket #${currentEditingTicket.id} erfolgreich aktualisiert!`, 'success');
+            
+            // Modals schließen und Listen aktualisieren
+            closeEditModal();
+            displayTickets();
+            updateStats();
+        }
+
+        // Ticket bearbeiten
+        function editTicket(ticketId) {
+            startEditTicket(ticketId);
+        }
+
+        // Ticket-Status ändern
+        function changeTicketStatus(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            const newStatus = prompt(
+                `Neuer Status für Ticket #${ticketId}:\n\n` +
+                `1 = Offen\n` +
+                `2 = In Bearbeitung\n` +
+                `3 = Gelöst\n\n` +
+                `Aktuell: ${ticket.status}`,
+                ticket.status === 'Offen' ? '1' : ticket.status === 'In Bearbeitung' ? '2' : '3'
+            );
+            
+            const statusMap = {
+                '1': 'Offen',
+                '2': 'In Bearbeitung', 
+                '3': 'Gelöst'
+            };
+            
+            if (statusMap[newStatus]) {
+                ticket.status = statusMap[newStatus];
+                showNotification(`✅ Status von Ticket #${ticketId} geändert: ${ticket.status}`, 'success');
+                displayTickets();
+                updateStats();
+            }
+        }
+
+        // Ticket löschen
+        function deleteTicket(ticketId) {
+            if (confirm(`Ticket #${ticketId} wirklich löschen?`)) {
+                tickets = tickets.filter(t => t.id !== ticketId);
+                saveTicketsToStorage(); // Löschung speichern!
+                showNotification(`🗑️ Ticket #${ticketId} gelöscht`, 'success');
+                displayTickets();
+                updateStats();
+            }
+        }
+
+        // Tickets filtern
+        function filterTickets() {
+            displayTickets();
+        }
+
+        // Priority Icon
+        function getPriorityIcon(priority) {
+            const icons = {
+                'Niedrig': '🟢',
+                'Normal': '🔵', 
+                'Hoch': '🟡',
+                'Kritisch': '🔴'
+            };
+            return icons[priority] || '🔵';
+        }
+
+        // Status Icon  
+        function getStatusIcon(status) {
+            const icons = {
+                'Offen': '🔴',
+                'In Bearbeitung': '🟡',
+                'Gelöst': '🟢'
+            };
+            return icons[status] || '🔴';
+        }
+
+        // Benachrichtigungen
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Modal außerhalb schließen
+        window.onclick = function(event) {
+            const ticketModal = document.getElementById('ticketModal');
+            const editModal = document.getElementById('editModal');
+            
+            if (event.target === ticketModal) {
+                closeModal();
+            }
+            if (event.target === editModal) {
+                closeEditModal();
+            }
+        }
+
+        // Escape-Taste zum Schließen
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                closeEditModal();
+            }
+        });
+
+        // Demo-Daten für neue Installationen hinzufügen
+        function addDemoData() {
+            if (tickets.length === 0) {
+                const demoTickets = [
+                    {
+                        id: 1,
+                        kundenName: "Max Mustermann",
+                        firma: "Mustermann GmbH", 
+                        telefon: "0203 123456",
+                        kundenEmail: "max@mustermann.de",
+                        zugewiesen: "Administrator",
+                        gruppe: "Software",
+                        prioritaet: "Hoch",
+                        stoerung: "Software funktioniert nicht mehr nach dem Update. Fehlermeldung beim Start.",
+                        kategorie: "Bug",
+                        status: "In Bearbeitung",
+                        ersteller: "Administrator",
+                        erstelltAm: new Date().toLocaleString('de-DE'),
+                        kommentare: [
+                            {
+                                author: "Administrator",
+                                date: new Date().toLocaleString('de-DE'),
+                                text: "Problem reproduziert. Update wird vorbereitet."
+                            }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        kundenName: "Anna Weber",
+                        firma: "Weber & Co KG",
+                        telefon: "0211 987654", 
+                        kundenEmail: "anna@weber-co.de",
+                        zugewiesen: "Max Schmidt",
+                        gruppe: "Hardware",
+                        prioritaet: "Normal",
+                        stoerung: "Drucker druckt nur noch weiße Seiten, obwohl Toner voll ist.",
+                        kategorie: "Support",
+                        status: "Offen",
+                        ersteller: "Max Schmidt",
+                        erstelltAm: new Date().toLocaleString('de-DE'),
+                        kommentare: []
+                    }
+                ];
+                
+                tickets = demoTickets;
+                ticketCounter = 3;
+                saveTicketsToStorage();
+                console.log('✅ Demo-Daten hinzugefügt');
+            }
+        }
+
+        // Beim ersten Laden Demo-Daten hinzufügen falls keine Tickets vorhanden
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                addDemoData();
+                updateStats();
+            }, 1000);
+        });
+
+        console.log('📱 Ultra-einfache Mobile Version geladen');
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">

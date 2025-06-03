@@ -880,4 +880,221 @@
 
         // Statistiken aktualisieren
         function updateStats() {
-            const offeneTickets = tickets.filter(t => t.status === 'Offen').
+            const offeneTickets = tickets.filter(t => t.status === 'Offen').length;
+            const inBearbeitung = tickets.filter(t => t.status === 'In Bearbeitung').length;
+            const geloeste = tickets.filter(t => t.status === 'Gelöst').length;
+            const erfolgsrate = tickets.length > 0 ? Math.round((geloeste / tickets.length) * 100) : 94;
+            
+            // Statistik-Karten aktualisieren
+            const statCards = document.querySelectorAll('.stat-number');
+            if (statCards.length >= 4) {
+                statCards[0].textContent = offeneTickets;
+                statCards[1].textContent = inBearbeitung;
+                statCards[2].textContent = geloeste;
+                statCards[3].textContent = erfolgsrate + '%';
+            }
+        }
+
+        // Teams-Benachrichtigung senden (Simulation)
+        function sendTeamsNotification(ticketData) {
+            console.log('Teams-Benachrichtigung für Ticket #' + ticketData.id);
+            
+            // Simuliere Teams-Nachricht
+            const teamsMessage = {
+                title: `🎫 Neues Ticket #${ticketData.id}`,
+                kunde: ticketData.kundenName,
+                firma: ticketData.firma,
+                prioritaet: ticketData.prioritaet,
+                gruppe: ticketData.gruppe,
+                problem: ticketData.stoerung.substring(0, 100) + '...'
+            };
+            
+            // In echter Version würde hier der Teams-Webhook aufgerufen
+            setTimeout(() => {
+                console.log('📢 Teams-Nachricht gesendet:', teamsMessage);
+            }, 1000);
+        }
+
+        // Tickets anzeigen
+        function displayTickets() {
+            const ticketsList = document.getElementById('ticketsList');
+            const noTickets = document.getElementById('noTickets');
+            const filter = document.getElementById('ticketFilter').value;
+            
+            // Tickets filtern
+            let filteredTickets = tickets;
+            if (filter !== 'all') {
+                filteredTickets = tickets.filter(ticket => ticket.status === filter);
+            }
+            
+            // Sortieren: Neueste zuerst
+            filteredTickets.sort((a, b) => b.id - a.id);
+            
+            if (filteredTickets.length === 0) {
+                ticketsList.style.display = 'none';
+                noTickets.style.display = 'block';
+                return;
+            }
+            
+            ticketsList.style.display = 'block';
+            noTickets.style.display = 'none';
+            
+            // Tickets HTML generieren
+            ticketsList.innerHTML = filteredTickets.map(ticket => `
+                <div class="ticket-card" onclick="openTicketDetail(${ticket.id})">
+                    <div class="ticket-header">
+                        <span class="ticket-id">#${ticket.id}</span>
+                        <span class="ticket-priority priority-${ticket.prioritaet.toLowerCase()}">
+                            ${getPriorityIcon(ticket.prioritaet)} ${ticket.prioritaet}
+                        </span>
+                    </div>
+                    
+                    <div class="ticket-customer">${ticket.kundenName}</div>
+                    <div class="ticket-company">🏢 ${ticket.firma} • 📞 ${ticket.telefon}</div>
+                    
+                    <div class="ticket-description">
+                        ${ticket.stoerung}
+                    </div>
+                    
+                    <div class="ticket-meta">
+                        <div>
+                            <span class="ticket-status status-${ticket.status.toLowerCase().replace(' ', '-')}">
+                                ${getStatusIcon(ticket.status)} ${ticket.status}
+                            </span>
+                            • 🔧 ${ticket.gruppe}
+                        </div>
+                        <div>${ticket.erstelltAm}</div>
+                    </div>
+                    
+                    <div class="ticket-actions">
+                        <button class="action-menu-btn" onclick="event.stopPropagation(); changeTicketStatus(${ticket.id})">
+                            🔄 Status ändern
+                        </button>
+                        <button class="action-menu-btn" onclick="event.stopPropagation(); editTicket(${ticket.id})">
+                            ✏️ Bearbeiten
+                        </button>
+                        <button class="action-menu-btn" onclick="event.stopPropagation(); deleteTicket(${ticket.id})">
+                            🗑️ Löschen
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Ticket-Details öffnen
+        function openTicketDetail(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            const details = `
+🎫 Ticket #${ticket.id}
+
+👤 Kunde: ${ticket.kundenName}
+🏢 Firma: ${ticket.firma}
+📞 Telefon: ${ticket.telefon}
+${ticket.kundenEmail ? '📧 E-Mail: ' + ticket.kundenEmail : ''}
+
+🔧 Gruppe: ${ticket.gruppe}
+🚨 Priorität: ${ticket.prioritaet}
+📊 Status: ${ticket.status}
+${ticket.kategorie ? '📋 Kategorie: ' + ticket.kategorie : ''}
+
+📝 Problem:
+${ticket.stoerung}
+
+⏰ Erstellt: ${ticket.erstelltAm}
+👨‍💼 Ersteller: ${ticket.ersteller}
+            `;
+            
+            alert(details);
+        }
+
+        // Ticket-Status ändern
+        function changeTicketStatus(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            const newStatus = prompt(
+                `Neuer Status für Ticket #${ticketId}:\n\n` +
+                `1 = Offen\n` +
+                `2 = In Bearbeitung\n` +
+                `3 = Gelöst\n\n` +
+                `Aktuell: ${ticket.status}`,
+                ticket.status === 'Offen' ? '1' : ticket.status === 'In Bearbeitung' ? '2' : '3'
+            );
+            
+            const statusMap = {
+                '1': 'Offen',
+                '2': 'In Bearbeitung', 
+                '3': 'Gelöst'
+            };
+            
+            if (statusMap[newStatus]) {
+                ticket.status = statusMap[newStatus];
+                showNotification(`✅ Status von Ticket #${ticketId} geändert: ${ticket.status}`, 'success');
+                displayTickets();
+                updateStats();
+            }
+        }
+
+        // Ticket bearbeiten
+        function editTicket(ticketId) {
+            showNotification('🔧 Bearbeitung wird in der nächsten Version verfügbar sein', 'info');
+        }
+
+        // Ticket löschen
+        function deleteTicket(ticketId) {
+            if (confirm(`Ticket #${ticketId} wirklich löschen?`)) {
+                tickets = tickets.filter(t => t.id !== ticketId);
+                showNotification(`🗑️ Ticket #${ticketId} gelöscht`, 'success');
+                displayTickets();
+                updateStats();
+            }
+        }
+
+        // Tickets filtern
+        function filterTickets() {
+            displayTickets();
+        }
+
+        // Priority Icon
+        function getPriorityIcon(priority) {
+            const icons = {
+                'Niedrig': '🟢',
+                'Normal': '🔵', 
+                'Hoch': '🟡',
+                'Kritisch': '🔴'
+            };
+            return icons[priority] || '🔵';
+        }
+
+        // Status Icon  
+        function getStatusIcon(status) {
+            const icons = {
+                'Offen': '🔴',
+                'In Bearbeitung': '🟡',
+                'Gelöst': '🟢'
+            };
+            return icons[status] || '🔴';
+        }
+
+        // Benachrichtigungen
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        console.log('📱 Ultra-einfache Mobile Version geladen');
+    </script>
+</body>
+</html>

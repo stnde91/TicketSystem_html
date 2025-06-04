@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket System Pro</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="container">
+        <div class="logo">🎫</div>
+        <h1 class="title">Ticket System Pro</h1>
+        
+        <div class="demo-buttons">
+            <div class="demo-button" onclick="quickLogin('admin@firma.de')">
+                👑 Admin-Zugang
+            </div>
+            <div class="demo-button" onclick="quickLogin('max@firma.de')">
+                👤 Mitarbeiter-Zugang  
+            </div>
+            <div class="demo-button" onclick="quickLogin('gast@demo.de')">
+                👁️ Gast-Zugang
+            </div>
+        </div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label">E-Mail:</label>
+                <input type="email" class="form-input" id="email" placeholder="z.B. admin@firma.de" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Passwort:</label>
+                <input type="password" class="form-input" id="password" placeholder="Passwort" required>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                🚀 Anmelden
+            </button>
+        </form>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="container main-app">
+        <!-- Header -->
+        <div class="header">
+            <h2>🎫 Ticket System Pro</h2>
+            <div class="user-info" id="userInfo">Angemeldet als: Benutzer</div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Start</button>
+            <button class="nav-tab" onclick="showTab('create')">➕ Neu</button>
+            <button class="nav-tab" onclick="showTab('tickets')">📋 Tickets</button>
+            <button class="nav-tab" id="adminTabButton" onclick="showTab('admin')" style="display:none;">⚙️ Admin</button>
+        </div>
+        
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Offen</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Bearbeitung</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Gelöst</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0%</div>
+                    <div class="stat-label">Erfolgsrate</div>
+                </div>
+            </div>
+            
+            <div class="action-btn" onclick="showTab('create')">
+                <strong>➕ Neues Ticket erstellen</strong><br>
+                <small>Problem schnell melden</small>
+            </div>
+            
+            <div class="action-btn" onclick="testTeams()">
+                <strong>📢 Teams-Test</strong><br>
+                <small>Integration ausprobieren</small>
+            </div>
+        </div>
+        
+        <!-- Create Ticket Tab -->
+        <div id="create-tab" class="tab-content">
+            <h3>➕ Neues Ticket erstellen</h3>
+            
+            <form id="ticketForm" onsubmit="createTicket(event)">
+                <div class="form-group">
+                    <label class="form-label">👤 Kundenname *</label>
+                    <input type="text" class="form-input" id="kundenName" placeholder="Max Mustermann" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">🏢 Firma *</label>
+                    <input type="text" class="form-input" id="firma" placeholder="Mustermann GmbH" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📞 Telefon *</label>
+                    <input type="tel" class="form-input" id="telefon" placeholder="0203 123456" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📧 E-Mail</label>
+                    <input type="email" class="form-input" id="kundenEmail" placeholder="max@mustermann.de">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">👨‍💼 Zugewiesen an</label>
+                    <select class="form-input" id="zugewiesen">
+                        <option value="">Nicht zugewiesen</option>
+                        <option value="Administrator">👑 Administrator</option>
+                        <option value="Max Schmidt">👤 Max Schmidt</option>
+                        <option value="Anna Weber">👩‍💻 Anna Weber</option>
+                        <option value="Thomas Müller">🧑‍🔧 Thomas Müller</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">🔧 Gruppe *</label>
+                    <select class="form-input" id="gruppe" required>
+                        <option value="">Bitte wählen...</option>
+                        <option value="Software">💻 Software</option>
+                        <option value="Hardware">🖥️ Hardware</option>
+                        <option value="Netzwerk">🌐 Netzwerk</option>
+                        <option value="Büro">📋 Büro/Admin</option>
+                        <option value="Telefon">📞 Telefon/VoIP</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">🚨 Priorität *</label>
+                    <select class="form-input" id="prioritaet" required>
+                        <option value="Niedrig">🟢 Niedrig - Kann warten</option>
+                        <option value="Normal" selected>🔵 Normal - Standard</option>
+                        <option value="Hoch">🟡 Hoch - Bald bearbeiten</option>
+                        <option value="Kritisch">🔴 Kritisch - Sofort!</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📝 Störungsbeschreibung *</label>
+                    <textarea class="form-input" id="stoerung" placeholder="Beschreiben Sie das Problem so detailliert wie möglich..." 
+                              required style="min-height: 120px; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📋 Kategorie</label>
+                    <select class="form-input" id="kategorie">
+                        <option value="">Optional...</option>
+                        <option value="Bug">🐛 Fehler/Bug</option>
+                        <option value="Feature">✨ Neue Funktion</option>
+                        <option value="Support">🆘 Support-Anfrage</option>
+                        <option value="Installation">⚙️ Installation</option>
+                        <option value="Training">📚 Schulung</option>
+                        <option value="Wartung">🔧 Wartung</option>
+                    </select>
+                </div>
+                
+                <div class="action-btn" style="background: #f0f9ff; border-color: #0ea5e9; margin-bottom: 20px;">
+                    <strong>💡 Tipp:</strong><br>
+                    <small>Je detaillierter Sie das Problem beschreiben, desto schneller können wir helfen!</small>
+                </div>
+                
+                <button type="submit" class="login-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    ✅ Ticket erstellen
+                </button>
+                
+                <button type="button" class="action-btn" onclick="clearTicketForm()" 
+                        style="margin-top: 10px; color: #6c757d; border-color: #6c757d;">
+                    🗑️ Formular leeren
+                </button>
+            </form>
+        </div>
+        
+        <!-- Tickets Tab -->
+        <div id="tickets-tab" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>📋 Meine Tickets</h3>
+                <select id="ticketFilter" class="form-input status-dropdown-filter" style="width: auto; padding: 8px 12px;" onchange="filterTickets()">
+                    <option value="all">Alle Tickets</option>
+                    <option value="Offen">🔴 Offen</option>
+                    <option value="In Bearbeitung">🟡 In Bearbeitung</option>
+                    <option value="Gelöst">🟢 Gelöst</option>
+                </select>
+            </div>
+            
+            <div id="ticketsList" class="tickets-list"></div>
+            
+            <div id="noTickets" class="no-tickets" style="display: none;">
+                <div>📋</div>
+                <strong>Keine Tickets vorhanden</strong><br>
+                <small>Erstellen Sie Ihr erstes Ticket über den "Neu" Tab</small>
+            </div>
+        </div>
+        
+        <!-- Admin Tab -->
+        <div id="admin-tab" class="tab-content">
+            <h3>⚙️ Benutzerverwaltung</h3>
+            
+            <!-- Create User Form -->
+            <form id="createUserForm" onsubmit="handleCreateUser(event)" class="admin-form">
+                <h4>👤 Neuen Benutzer anlegen</h4>
+                
+                <div class="form-group">
+                    <label class="form-label" for="newUserName">👤 Name *</label>
+                    <input type="text" class="form-input" id="newUserName" placeholder="Max Mustermann" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="newUserEmail">📧 E-Mail *</label>
+                    <input type="email" class="form-input" id="newUserEmail" placeholder="max.mustermann@firma.de" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="newUserPassword">🔑 Passwort *</label>
+                    <input type="password" class="form-input" id="newUserPassword" placeholder="Mindestens 6 Zeichen" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="newUserRole">👑 Rolle *</label>
+                    <select class="form-input" id="newUserRole" required>
+                        <option value="user">👤 Benutzer</option>
+                        <option value="admin">👑 Administrator</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    ➕ Benutzer anlegen
+                </button>
+            </form>
+
+            <!-- User List -->
+            <h4 style="margin-bottom: 15px; color: #374151;">📋 Vorhandene Benutzer</h4>
+            <div id="userList" class="user-list"></div>
+            <div id="noUsers" class="no-users" style="display: none;">
+                <div>👥</div>
+                <strong>Keine Benutzer vorhanden</strong><br>
+                <small>Legen Sie den ersten Benutzer über das Formular oben an.</small>
+            </div>
+        </div>
+        
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="logout()">
+            Abmelden
+        </button>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">🎫 Ticket Details</div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body" id="modalBody"></div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Schließen</button>
+                <button class="btn btn-primary" id="editTicketBtn" onclick="startEditTicket()">✏️ Bearbeiten</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Ticket Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">✏️ Ticket bearbeiten</div>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="editTicketForm">
+                    <div class="form-group">
+                        <label class="form-label">👤 Kundenname *</label>
+                        <input type="text" class="form-input" id="editKundenName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🏢 Firma *</label>
+                        <input type="text" class="form-input" id="editFirma" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📞 Telefon *</label>
+                        <input type="tel" class="form-input" id="editTelefon" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📧 E-Mail</label>
+                        <input type="email" class="form-input" id="editKundenEmail">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">👨‍💼 Zugewiesen an</label>
+                        <select class="form-input" id="editZugewiesen">
+                            <option value="">Nicht zugewiesen</option>
+                            <option value="Administrator">👑 Administrator</option>
+                            <option value="Max Schmidt">👤 Max Schmidt</option>
+                            <option value="Anna Weber">👩‍💻 Anna Weber</option>
+                            <option value="Thomas Müller">🧑‍🔧 Thomas Müller</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🔧 Gruppe *</label>
+                        <select class="form-input" id="editGruppe" required>
+                            <option value="Software">💻 Software</option>
+                            <option value="Hardware">🖥️ Hardware</option>
+                            <option value="Netzwerk">🌐 Netzwerk</option>
+                            <option value="Büro">📋 Büro/Admin</option>
+                            <option value="Telefon">📞 Telefon/VoIP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🚨 Priorität *</label>
+                        <select class="form-input" id="editPriorität" required>
+                            <option value="Niedrig">🟢 Niedrig - Kann warten</option>
+                            <option value="Normal">🔵 Normal - Standard</option>
+                            <option value="Hoch">🟡 Hoch - Bald bearbeiten</option>
+                            <option value="Kritisch">🔴 Kritisch - Sofort!</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📊 Status *</label>
+                        <select class="form-input status-dropdown-filter" id="editStatus" required>
+                            <option value="Offen">🔴 Offen</option>
+                            <option value="In Bearbeitung">🟡 In Bearbeitung</option>
+                            <option value="Gelöst">🟢 Gelöst</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📝 Störungsbeschreibung *</label>
+                        <textarea class="form-input" id="editStoerung" required style="min-height: 120px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📋 Kategorie</label>
+                        <select class="form-input" id="editKategorie">
+                            <option value="">Optional...</option>
+                            <option value="Bug">🐛 Fehler/Bug</option>
+                            <option value="Feature">✨ Neue Funktion</option>
+                            <option value="Support">🆘 Support-Anfrage</option>
+                            <option value="Installation">⚙️ Installation</option>
+                            <option value="Training">📚 Schulung</option>
+                            <option value="Wartung">🔧 Wartung</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveTicketChanges()">💾 Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/tickets.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
